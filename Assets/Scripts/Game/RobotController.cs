@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class RobotController : MonoBehaviour
 {
@@ -8,14 +9,27 @@ public class RobotController : MonoBehaviour
     
     private GridManager gridManager;
     private bool isMoving = false;
-    private Vector2 targetPosition;
     
     public enum Direction { Up, Right, Down, Left }
 
     void Start()
     {
+        // 1. Увеличиваем робота в 2 раза
+        transform.localScale = new Vector3(2f, 2f, 1f);
+        
+        // 2. Делаем робота ярким
+        GetComponent<SpriteRenderer>().color = Color.blue;
+        
+        // 3. Находим GridManager
         gridManager = FindFirstObjectByType<GridManager>();
-        transform.position = gridManager.GetCellCenter(gridPosition);
+        
+        // 4. Ставим на позицию
+        if (gridManager != null)
+        {
+            transform.position = gridManager.GetCellCenter(gridPosition);
+        }
+        
+        // 5. Поворачиваем
         UpdateRotation();
     }
 
@@ -26,15 +40,11 @@ public class RobotController : MonoBehaviour
         Vector2Int moveVector = GetDirectionVector();
         Vector2Int targetGridPos = gridPosition + moveVector;
         
-        // Проверка выхода за границы
         if (IsValidPosition(targetGridPos))
         {
             gridPosition = targetGridPos;
-            targetPosition = gridManager.GetCellCenter(targetGridPos);
-            isMoving = true;
-            
-            // Запускаем анимацию движения
-            StartCoroutine(MoveToPosition());
+            Vector2 targetPos = gridManager.GetCellCenter(targetGridPos);
+            StartCoroutine(MoveToPosition(targetPos));
         }
     }
 
@@ -50,20 +60,22 @@ public class RobotController : MonoBehaviour
         UpdateRotation();
     }
 
-    private System.Collections.IEnumerator MoveToPosition()
+    private IEnumerator MoveToPosition(Vector2 target)
     {
-        Vector2 startPos = transform.position;
-        float journeyLength = Vector2.Distance(startPos, targetPosition);
-        float startTime = Time.time;
+        isMoving = true;
+        Vector2 start = transform.position;
+        float distance = Vector2.Distance(start, target);
+        float time = distance / moveSpeed;
+        float elapsed = 0;
         
-        while (transform.position != (Vector3)targetPosition)
+        while (elapsed < time)
         {
-            float distCovered = (Time.time - startTime) * moveSpeed;
-            float fractionOfJourney = distCovered / journeyLength;
-            transform.position = Vector2.Lerp(startPos, targetPosition, fractionOfJourney);
+            elapsed += Time.deltaTime;
+            transform.position = Vector2.Lerp(start, target, elapsed / time);
             yield return null;
         }
         
+        transform.position = target;
         isMoving = false;
     }
 
@@ -94,7 +106,6 @@ public class RobotController : MonoBehaviour
 
     private bool IsValidPosition(Vector2Int pos)
     {
-        // Здесь добавить проверку на препятствия
         return pos.x >= 0 && pos.x < 10 && pos.y >= 0 && pos.y < 10;
     }
 }
