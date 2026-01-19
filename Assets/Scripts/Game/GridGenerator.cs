@@ -121,9 +121,25 @@ public class GridGenerator : MonoBehaviour
     
     void PlaceRobot()
     {
+        // if (_robotPrefab != null)
+        // {
+        //     PlaceItem(_robotPrefab, _startPosition, "Robot");
+        // }
         if (_robotPrefab != null)
         {
-            PlaceItem(_robotPrefab, _startPosition, "Robot");
+            Vector3 robotPosition = new Vector3(
+                _startPosition.x * _cellSize,
+                _startPosition.y * _cellSize,
+                -1f
+            );
+            
+            GameObject robot = Instantiate(_robotPrefab, robotPosition, Quaternion.identity);
+            robot.name = "Robot";
+            robot.transform.SetParent(transform);
+            
+            // Для отладки - выводим позиции
+            Debug.Log($"Стартовая клетка: ({_startPosition.x}, {_startPosition.y})");
+            Debug.Log($"Робот создан в: {robotPosition}");
         }
     }
     

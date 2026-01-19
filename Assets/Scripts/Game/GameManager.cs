@@ -3,7 +3,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private GameObject _robotPrefab; // Префаб робота
-    [SerializeField] private Vector2Int _robotStartCell = new Vector2Int(1, 2); // Стартовая клетка (X, Y)
+    [SerializeField] private Vector2Int _robotStartCell = new Vector2Int(0, 2); // Стартовая клетка (X, Y)
 
     // Ссылка на генератор сетки, чтобы узнать размер клетки
     [SerializeField] private GridGenerator _gridGenerator;
