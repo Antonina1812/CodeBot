@@ -121,14 +121,10 @@ public class GridGenerator : MonoBehaviour
     
     void PlaceRobot()
     {
-        // if (_robotPrefab != null)
-        // {
-        //     PlaceItem(_robotPrefab, _startPosition, "Robot");
-        // }
         if (_robotPrefab != null)
         {
             Vector3 robotPosition = new Vector3(
-                _startPosition.x * _cellSize,
+                _startPosition.x * _cellSize + 1.0f,
                 _startPosition.y * _cellSize,
                 -1f
             );
@@ -146,7 +142,7 @@ public class GridGenerator : MonoBehaviour
     void PlaceItem(GameObject prefab, Vector2Int gridPosition, string itemName)
     {
         Vector3 worldPosition = new Vector3(
-            gridPosition.x * _cellSize,
+            gridPosition.x * _cellSize + 1.0f,
             gridPosition.y * _cellSize,
             -0.5f  // Предметы поверх клеток
         );
