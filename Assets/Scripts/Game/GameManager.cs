@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        SpawnRobot();
+        //SpawnRobot();
     }
 
     void SpawnRobot()
