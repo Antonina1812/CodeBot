@@ -1,10 +1,10 @@
 using UnityEngine;
 
-public class GridGeneratorLevel2 : MonoBehaviour
+public class GridGeneratorLevel3 : MonoBehaviour
 {
     [Header("Настройки поля")]
     [SerializeField] private GameObject _cellPrefab; // Префаб одной клетки
-    [SerializeField] private int _gridWidth = 6;     // Ширина поля
+    [SerializeField] private int _gridWidth = 7;     // Ширина поля
     [SerializeField] private int _gridHeight = 6;    // Высота поля
     [SerializeField] private float _cellSize = 1.0f; // Размер клетки в юнитах
     
