@@ -17,14 +17,10 @@ public class GridGeneratorLevel1 : MonoBehaviour
     [SerializeField] private Sprite _finishCellSprite;
     
     [Header("Префабы предметов")]
-    //[SerializeField] private GameObject _computerPrefab;
-    //[SerializeField] private GameObject _diskPrefab;
     [SerializeField] private GameObject _obstaclePrefab;
     [SerializeField] private GameObject _robotPrefab;
     
     [Header("Позиции предметов")]
-    //[SerializeField] private Vector2Int _computerPosition = new Vector2Int(3, 3);
-    //[SerializeField] private Vector2Int _diskPosition = new Vector2Int(2, 4);
     [SerializeField] private Vector2Int[] _obstaclePositions = new Vector2Int[]
     {
         new Vector2Int(0, 0),
@@ -97,18 +93,6 @@ public class GridGeneratorLevel1 : MonoBehaviour
     
     void PlaceItems()
     {
-        // Размещаем компьютер
-        // if (_computerPrefab != null)
-        // {
-        //     PlaceItem(_computerPrefab, _computerPosition, "Computer");
-        // }
-        
-        // Размещаем диск
-        // if (_diskPrefab != null)
-        // {
-        //     PlaceItem(_diskPrefab, _diskPosition, "Disk");
-        // }
-        
         // Размещаем препятствия
         foreach (var pos in _obstaclePositions)
         {
@@ -121,10 +105,6 @@ public class GridGeneratorLevel1 : MonoBehaviour
     
     void PlaceRobot()
     {
-        // if (_robotPrefab != null)
-        // {
-        //     PlaceItem(_robotPrefab, _startPosition, "Robot");
-        // }
         if (_robotPrefab != null)
         {
             Vector3 robotPosition = new Vector3(
