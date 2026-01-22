@@ -4,38 +4,56 @@ public class GridGenerator : MonoBehaviour
 {
     [Header("Настройки поля")]
     [SerializeField] private GameObject _cellPrefab; // Префаб одной клетки
-    [SerializeField] private int _gridWidth = 5;     // Ширина поля
-    [SerializeField] private int _gridHeight = 5;    // Высота поля
+    [SerializeField] private int _gridWidth = 7;     // Ширина поля
+    [SerializeField] private int _gridHeight = 7;    // Высота поля
     [SerializeField] private float _cellSize = 1.0f; // Размер клетки в юнитах
     
     [Header("Специальные клетки")]
     [SerializeField] private Vector2Int _startPosition = new Vector2Int(1, 2);
     [SerializeField] private Vector2Int _finishPosition = new Vector2Int(4, 0);
+    [SerializeField] private Vector2Int _startPosition2 = new Vector2Int(5, 5);
+    [SerializeField] private Vector2Int _finishPosition2 = new Vector2Int(0, 6);
     
     [Header("Спрайты специальных клеток")]
     [SerializeField] private Sprite _startCellSprite;
     [SerializeField] private Sprite _finishCellSprite;
+    [SerializeField] private Sprite _finishCellSprite2; // Добавлено: спрайт второго финиша
     
     [Header("Префабы предметов")]
-    [SerializeField] private GameObject _computerPrefab;
-    [SerializeField] private GameObject _diskPrefab;
     [SerializeField] private GameObject _obstaclePrefab;
     [SerializeField] private GameObject _robotPrefab;
+    [SerializeField] private GameObject _robotPrefab2;
+    [SerializeField] private GameObject _coinPrefab;
+    [SerializeField] private GameObject _computerPrefab;
+    [SerializeField] private GameObject _diskPrefab;
     
     [Header("Позиции предметов")]
-    [SerializeField] private Vector2Int _computerPosition = new Vector2Int(3, 3);
-    [SerializeField] private Vector2Int _diskPosition = new Vector2Int(2, 4);
     [SerializeField] private Vector2Int[] _obstaclePositions = new Vector2Int[]
     {
         new Vector2Int(0, 0),
         new Vector2Int(4, 4)
     };
+    
+    [Header("Монеты")]
+    [SerializeField] private Vector2Int[] _coinPositions = new Vector2Int[]
+    {
+        new Vector2Int(1, 1),
+        new Vector2Int(3, 3),
+        new Vector2Int(5, 2)
+    };
+    
+    [Header("Компьютер и диск")]
+    [SerializeField] private Vector2Int _computerPosition = new Vector2Int(3, 3);
+    [SerializeField] private Vector2Int _diskPosition = new Vector2Int(2, 4);
 
     void Start()
     {
         GenerateGrid();
         PlaceItems();
+        PlaceCoins();
+        PlaceComputerAndDisk();
         PlaceRobot();
+        PlaceRobot2();
     }
 
     void GenerateGrid()
@@ -79,12 +97,22 @@ public class GridGenerator : MonoBehaviour
         if (x == _startPosition.x && y == _startPosition.y && _startCellSprite != null)
         {
             sr.sprite = _startCellSprite;
-            cell.name += " (Start)";
+            cell.name += " (Start1)";
         }
         else if (x == _finishPosition.x && y == _finishPosition.y && _finishCellSprite != null)
         {
             sr.sprite = _finishCellSprite;
-            cell.name += " (Finish)";
+            cell.name += " (Finish1)";
+        }
+        else if (x == _startPosition2.x && y == _startPosition2.y && _startCellSprite != null)
+        {
+            sr.sprite = _startCellSprite;
+            cell.name += " (Start2)";
+        }
+        else if (x == _finishPosition2.x && y == _finishPosition2.y && _finishCellSprite2 != null) // Используем отдельный спрайт
+        {
+            sr.sprite = _finishCellSprite2;
+            cell.name += " (Finish2)";
         }
         // Если это препятствие - меняем спрайт клетки на спрайт препятствия
         else if (IsObstaclePosition(new Vector2Int(x, y)))
@@ -97,25 +125,40 @@ public class GridGenerator : MonoBehaviour
     
     void PlaceItems()
     {
-        // Размещаем компьютер
-        if (_computerPrefab != null)
-        {
-            PlaceItem(_computerPrefab, _computerPosition, "Computer");
-        }
-        
-        // Размещаем диск
-        if (_diskPrefab != null)
-        {
-            PlaceItem(_diskPrefab, _diskPosition, "Disk");
-        }
-        
         // Размещаем препятствия
         foreach (var pos in _obstaclePositions)
         {
             if (_obstaclePrefab != null)
             {
-                PlaceItem(_obstaclePrefab, pos, "Obstacle");
+                PlaceItem(_obstaclePrefab, pos, "Obstacle", -0.2f);
             }
+        }
+    }
+    
+    void PlaceCoins()
+    {
+        // Размещаем монеты
+        foreach (var pos in _coinPositions)
+        {
+            if (_coinPrefab != null)
+            {
+                PlaceItem(_coinPrefab, pos, "Coin", -0.3f);
+            }
+        }
+    }
+    
+    void PlaceComputerAndDisk()
+    {
+        // Размещаем компьютер
+        if (_computerPrefab != null)
+        {
+            PlaceItem(_computerPrefab, _computerPosition, "Computer", -0.25f);
+        }
+        
+        // Размещаем диск
+        if (_diskPrefab != null)
+        {
+            PlaceItem(_diskPrefab, _diskPosition, "Disk", -0.25f);
         }
     }
     
@@ -130,21 +173,41 @@ public class GridGenerator : MonoBehaviour
             );
             
             GameObject robot = Instantiate(_robotPrefab, robotPosition, Quaternion.identity);
-            robot.name = "Robot";
+            robot.name = "Robot1";
             robot.transform.SetParent(transform);
             
             // Для отладки - выводим позиции
-            Debug.Log($"Стартовая клетка: ({_startPosition.x}, {_startPosition.y})");
-            Debug.Log($"Робот создан в: {robotPosition}");
+            Debug.Log($"Первый робот: стартовая клетка ({_startPosition.x}, {_startPosition.y})");
+            Debug.Log($"Робот1 создан в: {robotPosition}");
         }
     }
     
-    void PlaceItem(GameObject prefab, Vector2Int gridPosition, string itemName)
+    void PlaceRobot2()
+    {
+        if (_robotPrefab2 != null)
+        {
+            Vector3 robotPosition = new Vector3(
+                _startPosition2.x * _cellSize + 1.0f,
+                _startPosition2.y * _cellSize,
+                -1.1f
+            );
+            
+            GameObject robot = Instantiate(_robotPrefab2, robotPosition, Quaternion.identity);
+            robot.name = "Robot2";
+            robot.transform.SetParent(transform);
+            
+            // Для отладки - выводим позиции
+            Debug.Log($"Второй робот: стартовая клетка ({_startPosition2.x}, {_startPosition2.y})");
+            Debug.Log($"Робот2 создан в: {robotPosition}");
+        }
+    }
+    
+    void PlaceItem(GameObject prefab, Vector2Int gridPosition, string itemName, float zPosition)
     {
         Vector3 worldPosition = new Vector3(
             gridPosition.x * _cellSize + 1.0f,
             gridPosition.y * _cellSize,
-            -0.5f  // Предметы поверх клеток
+            zPosition  // Предметы поверх клеток
         );
         
         GameObject item = Instantiate(prefab, worldPosition, Quaternion.identity);
@@ -173,4 +236,6 @@ public class GridGenerator : MonoBehaviour
     // Публичные геттеры для специальных позиций
     public Vector2Int StartPosition => _startPosition;
     public Vector2Int FinishPosition => _finishPosition;
+    public Vector2Int StartPosition2 => _startPosition2;
+    public Vector2Int FinishPosition2 => _finishPosition2;
 }

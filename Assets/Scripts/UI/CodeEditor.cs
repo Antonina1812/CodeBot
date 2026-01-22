@@ -64,7 +64,7 @@ public class CodeEditor : MonoBehaviour
             _firstLinePosition.y - (_codeLines.Count * _lineSpacing),
             _zOffset // Важно: отрицательный Z чтобы быть поверх
         );
-        
+
         // Создаем строку
         GameObject newLine = Instantiate(linePrefab, _codeLinesContainer);
         newLine.name = $"CodeLine_{lineName}_{_codeLines.Count + 1}";
