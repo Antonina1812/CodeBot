@@ -11,9 +11,13 @@ public class CodeEditor : MonoBehaviour
     
     [Header("Настройки отображения")]
     [SerializeField] private RectTransform _codeLinesContainer;
-    [SerializeField] private float _lineSpacing = 60f; // Увеличил
+    [SerializeField] private float _lineSpacing = 10000f; // Увеличил для scale 100
     [SerializeField] private Vector2 _firstLinePosition = new Vector2(150f, -330f);
-    [SerializeField] private Vector2 _lineSize = new Vector2(1000f, 300f); // Размер строки
+    [SerializeField] private Vector2 _lineSize = new Vector2(300f, 80f); // Увеличил размер
+    
+    [Header("Настройки масштаба")]
+    [SerializeField] private float _lineScale = 100f; // Масштаб строк (можно менять в инспекторе)
+    [SerializeField] private float _zOffset = -10f; // Смещение по Z чтобы строки были поверх
     
     [Header("Кнопки")]
     [SerializeField] private Button _moveForwardButton;
@@ -25,14 +29,7 @@ public class CodeEditor : MonoBehaviour
     void Start()
     {
         InitializeButtons();
-        
-        // Проверяем настройки при старте
-        if (_codeLinesContainer != null)
-        {
-            Debug.Log($"Контейнер: anchoredPosition={_codeLinesContainer.anchoredPosition}, sizeDelta={_codeLinesContainer.sizeDelta}");
-            Debug.Log($"Контейнер anchors: min={_codeLinesContainer.anchorMin}, max={_codeLinesContainer.anchorMax}");
-            Debug.Log($"Контейнер pivot: {_codeLinesContainer.pivot}");
-        }
+        Debug.Log($"CodeEditor запущен. Масштаб строк: {_lineScale}");
     }
     
     void InitializeButtons()
@@ -62,9 +59,10 @@ public class CodeEditor : MonoBehaviour
         }
         
         // Рассчитываем позицию
-        Vector2 linePosition = new Vector2(
+        Vector3 linePosition = new Vector3(
             _firstLinePosition.x,
-            _firstLinePosition.y - (_codeLines.Count * _lineSpacing)
+            _firstLinePosition.y - (_codeLines.Count * _lineSpacing),
+            _zOffset // Важно: отрицательный Z чтобы быть поверх
         );
         
         // Создаем строку
@@ -75,25 +73,34 @@ public class CodeEditor : MonoBehaviour
         RectTransform rectTransform = newLine.GetComponent<RectTransform>();
         if (rectTransform != null)
         {
-            // ВАЖНО: Сначала настраиваем anchors и pivot
-            rectTransform.anchorMin = new Vector2(0f, 1f); // Top-Left
+            // Настраиваем anchors и pivot
+            rectTransform.anchorMin = new Vector2(0f, 1f);
             rectTransform.anchorMax = new Vector2(0f, 1f);
-            rectTransform.pivot = new Vector2(0f, 1f); // Pivot в верхнем левом углу
+            rectTransform.pivot = new Vector2(0.5f, 0.5f); // Центр для scale
             
-            // Затем устанавливаем позицию
-            rectTransform.anchoredPosition = linePosition;
+            // Устанавливаем позицию
+            rectTransform.anchoredPosition = new Vector2(linePosition.x, linePosition.y);
+            
+            // Устанавливаем локальную позицию Z
+            Vector3 localPos = rectTransform.localPosition;
+            rectTransform.localPosition = new Vector3(localPos.x, localPos.y, linePosition.z);
             
             // Устанавливаем размер
             rectTransform.sizeDelta = _lineSize;
             
-            // Сбрасываем локальные трансформации
-            rectTransform.localPosition = new Vector3(rectTransform.localPosition.x, rectTransform.localPosition.y, 0);
+            // Устанавливаем МАСШТАБ
+            float actualScale = _lineScale / 100f; // 100 в инспекторе = scale 1
+            rectTransform.localScale = new Vector3(actualScale, actualScale, 1f);
+            
+            // Сбрасываем rotation
             rectTransform.localRotation = Quaternion.identity;
-            rectTransform.localScale = Vector3.one;
+            
+            // Делаем строку последним дочерним элементом (чтобы была поверх)
+            newLine.transform.SetAsLastSibling();
             
             Debug.Log($"Создана строка: {lineName}");
-            Debug.Log($"Позиция: anchoredPosition={rectTransform.anchoredPosition}, localPosition={rectTransform.localPosition}");
-            Debug.Log($"Размер: {rectTransform.sizeDelta}, Scale: {rectTransform.localScale}");
+            Debug.Log($"Позиция: {rectTransform.anchoredPosition}, Z={rectTransform.localPosition.z}");
+            Debug.Log($"Масштаб: {rectTransform.localScale}");
         }
         else
         {
@@ -116,44 +123,53 @@ public class CodeEditor : MonoBehaviour
         Debug.Log("Редактор кода очищен");
     }
     
-    // Метод для отладки - выводит всю информацию о позициях
-    [ContextMenu("Показать информацию о позициях")]
-    void ShowPositionInfo()
+    // Метод для отладки видимости
+    [ContextMenu("Проверить видимость строк")]
+    void CheckLinesVisibility()
     {
-        if (_codeLinesContainer == null) return;
+        Debug.Log("=== ПРОВЕРКА ВИДИМОСТИ СТРОК ===");
         
-        Debug.Log("=== ИНФОРМАЦИЯ О ПОЗИЦИЯХ ===");
-        
-        // Информация о контейнере
-        Camera mainCamera = Camera.main;
-        if (mainCamera != null)
+        // Проверяем Canvas
+        Canvas canvas = GetComponentInParent<Canvas>();
+        if (canvas != null)
         {
-            Vector3 containerScreenPos = mainCamera.WorldToScreenPoint(_codeLinesContainer.position);
-            Debug.Log($"Контейнер в мировых координатах: {_codeLinesContainer.position}");
-            Debug.Log($"Контейнер на экране: {containerScreenPos}");
+            Debug.Log($"Canvas: mode={canvas.renderMode}, sortingLayer={canvas.sortingLayerName}, order={canvas.sortingOrder}");
         }
         
-        Debug.Log($"Контейнер anchoredPosition: {_codeLinesContainer.anchoredPosition}");
-        Debug.Log($"Контейнер rect: {_codeLinesContainer.rect}");
-        Debug.Log($"Контейнер anchors: min={_codeLinesContainer.anchorMin}, max={_codeLinesContainer.anchorMax}");
-        Debug.Log($"Контейнер pivot: {_codeLinesContainer.pivot}");
-        Debug.Log($"Контейнер offsetMin: {_codeLinesContainer.offsetMin}, offsetMax: {_codeLinesContainer.offsetMax}");
-        
-        // Информация о строках
-        Debug.Log($"Всего строк: {_codeLines.Count}");
-        for (int i = 0; i < _codeLines.Count; i++)
+        // Проверяем контейнер
+        if (_codeLinesContainer != null)
         {
-            if (_codeLines[i] != null)
+            Debug.Log($"Контейнер Z: {_codeLinesContainer.localPosition.z}");
+            
+            // Проверяем компоненты рендеринга
+            CanvasRenderer containerRenderer = _codeLinesContainer.GetComponent<CanvasRenderer>();
+            if (containerRenderer != null)
             {
-                RectTransform rt = _codeLines[i].GetComponent<RectTransform>();
-                Debug.Log($"Строка {i}: {_codeLines[i].name}, anchoredPosition: {rt.anchoredPosition}, sizeDelta: {rt.sizeDelta}");
+                Debug.Log($"Контейнер рендерер: cull={containerRenderer.cull}, hasMoved={containerRenderer.hasMoved}");
+            }
+        }
+        
+        // Проверяем строки
+        foreach (GameObject line in _codeLines)
+        {
+            if (line != null)
+            {
+                RectTransform rt = line.GetComponent<RectTransform>();
+                Image img = line.GetComponent<Image>();
+                
+                Debug.Log($"Строка {line.name}:");
+                Debug.Log($"  Позиция: {rt.anchoredPosition}, Z={rt.localPosition.z}");
+                Debug.Log($"  Масштаб: {rt.localScale}");
+                Debug.Log($"  Размер: {rt.sizeDelta}");
+                Debug.Log($"  Image enabled: {img.enabled}");
+                Debug.Log($"  Активна: {line.activeSelf}, Родитель активен: {line.transform.parent.gameObject.activeSelf}");
             }
         }
     }
     
-    // Метод для принудительного изменения размера строк
-    [ContextMenu("Исправить размеры всех строк")]
-    void FixAllLineSizes()
+    // Метод для принудительного исправления Z-координаты
+    [ContextMenu("Исправить Z-координаты")]
+    void FixZPositions()
     {
         foreach (GameObject line in _codeLines)
         {
@@ -162,11 +178,32 @@ public class CodeEditor : MonoBehaviour
                 RectTransform rt = line.GetComponent<RectTransform>();
                 if (rt != null)
                 {
-                    rt.sizeDelta = _lineSize;
-                    rt.localScale = Vector3.one;
+                    Vector3 pos = rt.localPosition;
+                    rt.localPosition = new Vector3(pos.x, pos.y, _zOffset);
+                    line.transform.SetAsLastSibling(); // Перемещаем на передний план
                 }
             }
         }
-        Debug.Log($"Размеры {_codeLines.Count} строк исправлены");
+        Debug.Log($"Z-координаты {_codeLines.Count} строк исправлены");
+    }
+    
+    // Метод для принудительного исправления масштаба
+    [ContextMenu("Исправить масштаб всех строк")]
+    void FixAllLineScales()
+    {
+        float actualScale = _lineScale / 100f;
+        
+        foreach (GameObject line in _codeLines)
+        {
+            if (line != null)
+            {
+                RectTransform rt = line.GetComponent<RectTransform>();
+                if (rt != null)
+                {
+                    rt.localScale = new Vector3(actualScale, actualScale, 1f);
+                }
+            }
+        }
+        Debug.Log($"Масштаб {_codeLines.Count} строк исправлен на {actualScale}");
     }
 }

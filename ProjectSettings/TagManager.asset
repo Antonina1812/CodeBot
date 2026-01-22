@@ -10,7 +10,7 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - CodeLine
   - Water
   - UI
   - 
@@ -42,6 +42,12 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: CodeLine
+    uniqueID: 3310013669
+    locked: 0
+  - name: UI
+    uniqueID: 2050215197
     locked: 0
   m_RenderingLayers:
   - Default
