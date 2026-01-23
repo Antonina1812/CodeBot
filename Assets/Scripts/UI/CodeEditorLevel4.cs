@@ -9,14 +9,14 @@ public class CodeEditorLevel4 : MonoBehaviour
     [SerializeField] private Sprite _turnLeftSprite;
     [SerializeField] private Sprite _turnRightSprite;
     [SerializeField] private Sprite _forSprite;
-    [SerializeField] private Sprite _ifSprite;
+    [SerializeField] private Sprite _insertSprite;
     [SerializeField] private Sprite _collectSprite;
     
     [Header("Настройки отображения")]
     [SerializeField] private RectTransform _codeLinesContainer;
-    [SerializeField] private float _lineSpacing = 40f;
-    [SerializeField] private Vector2 _firstLinePosition = new Vector2(150f, -330f);
-    [SerializeField] private Vector2 _lineSize = new Vector2(150f, 30f);
+    [SerializeField] private float _lineSpacing = 35f;
+    [SerializeField] private Vector2 _firstLinePosition = new Vector2(0f, 0f);
+    [SerializeField] private Vector2 _lineSize = new Vector2(140f, 35f);
     
     [Header("Настройки масштаба")]
     [SerializeField] private float _lineScale = 1f;
@@ -26,7 +26,7 @@ public class CodeEditorLevel4 : MonoBehaviour
     [SerializeField] private Button _turnLeftButton;
     [SerializeField] private Button _turnRightButton;
     [SerializeField] private Button _forButton;
-    [SerializeField] private Button _ifButton;
+    [SerializeField] private Button _insertButton;
     [SerializeField] private Button _collectButton;
     [SerializeField] private Button _deleteLastLineButton;
     
@@ -51,8 +51,8 @@ public class CodeEditorLevel4 : MonoBehaviour
         if (_forButton != null)
             _forButton.onClick.AddListener(() => AddCodeLine(_forSprite, "for"));
         
-        if (_ifButton != null)
-            _ifButton.onClick.AddListener(() => AddCodeLine(_ifSprite, "if"));
+        if (_insertButton != null)
+            _insertButton.onClick.AddListener(() => AddCodeLine(_insertSprite, "insert"));
         
         if (_collectButton != null)
             _collectButton.onClick.AddListener(() => AddCodeLine(_collectSprite, "collect"));
@@ -119,16 +119,5 @@ public class CodeEditorLevel4 : MonoBehaviour
             }
             _codeLines.RemoveAt(_codeLines.Count - 1);
         }
-    }
-    
-    [ContextMenu("Очистить редактор")]
-    public void ClearEditor()
-    {
-        foreach (GameObject line in _codeLines)
-        {
-            if (line != null)
-                Destroy(line);
-        }
-        _codeLines.Clear();
     }
 }

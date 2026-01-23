@@ -93,7 +93,6 @@ public class CodeEditorLevel1 : MonoBehaviour
         _codeLines.Add(newLine);
     }
     
-    // Добавлено: метод удаления последней строки
     void DeleteLastLine()
     {
         if (_codeLines.Count > 0)
@@ -105,16 +104,5 @@ public class CodeEditorLevel1 : MonoBehaviour
             }
             _codeLines.RemoveAt(_codeLines.Count - 1);
         }
-    }
-    
-    [ContextMenu("Очистить редактор")]
-    public void ClearEditor()
-    {
-        foreach (GameObject line in _codeLines)
-        {
-            if (line != null)
-                Destroy(line);
-        }
-        _codeLines.Clear();
     }
 }

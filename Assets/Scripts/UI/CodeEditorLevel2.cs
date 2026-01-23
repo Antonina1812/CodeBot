@@ -110,15 +110,4 @@ public class CodeEditorLevel2 : MonoBehaviour
             _codeLines.RemoveAt(_codeLines.Count - 1);
         }
     }
-    
-    [ContextMenu("Очистить редактор")]
-    public void ClearEditor()
-    {
-        foreach (GameObject line in _codeLines)
-        {
-            if (line != null)
-                Destroy(line);
-        }
-        _codeLines.Clear();
-    }
 }
