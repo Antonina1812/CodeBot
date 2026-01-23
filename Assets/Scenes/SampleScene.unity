@@ -1508,9 +1508,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 149, y: -76}
+  m_AnchoredPosition: {x: 309.0002, y: -350.9999}
   m_SizeDelta: {x: 320, y: 550}
-  m_Pivot: {x: 0, y: 1}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1230609325
 GameObject:
   m_ObjectHideFlags: 0
@@ -1962,15 +1962,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e96953f91fd4545a9b47b0704ed6e5ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CodeEditor
-  _moveForwardLinePrefab: {fileID: 3454224211906492330, guid: ab91c93cc43d2468eb1100c3ea08dec3, type: 3}
-  _turnLeftLinePrefab: {fileID: 6420939065854284449, guid: 8c03e8ad5ed4f4602956ce974ed325d0, type: 3}
-  _turnRightLinePrefab: {fileID: 3835858302036692318, guid: 2a31cc2f960eb4976a55b146b991b8c2, type: 3}
+  _moveForwardSprite: {fileID: -8203191263239802335, guid: cbfcdf178b8e5463b8d5926140b81dbc, type: 3}
+  _turnLeftSprite: {fileID: 8616669327447837791, guid: 5015c8482996141e1ab0c7d686dd9813, type: 3}
+  _turnRightSprite: {fileID: -6693428561845550806, guid: 5c1af0c32022c4ffb9304dfba85e8580, type: 3}
   _codeLinesContainer: {fileID: 1209891944}
-  _lineSpacing: 1
+  _lineSpacing: 35
   _firstLinePosition: {x: 0, y: 0}
-  _lineSize: {x: 300, y: 80}
-  _lineScale: 10000
-  _zOffset: 10
+  _lineSize: {x: 140, y: 35}
+  _lineScale: 1
   _moveForwardButton: {fileID: 999867897}
   _turnLeftButton: {fileID: 519270551}
   _turnRightButton: {fileID: 1074592204}
