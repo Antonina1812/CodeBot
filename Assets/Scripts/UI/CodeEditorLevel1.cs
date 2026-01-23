@@ -2,15 +2,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-public class CodeEditor : MonoBehaviour
+public class CodeEditorLevel1 : MonoBehaviour
 {
     [Header("Спрайты строк кода")]
     [SerializeField] private Sprite _moveForwardSprite;
     [SerializeField] private Sprite _turnLeftSprite;
     [SerializeField] private Sprite _turnRightSprite;
-    [SerializeField] private Sprite _forSprite;
-    [SerializeField] private Sprite _ifSprite;
-    [SerializeField] private Sprite _collectSprite;
     
     [Header("Настройки отображения")]
     [SerializeField] private RectTransform _codeLinesContainer;
@@ -25,9 +22,6 @@ public class CodeEditor : MonoBehaviour
     [SerializeField] private Button _moveForwardButton;
     [SerializeField] private Button _turnLeftButton;
     [SerializeField] private Button _turnRightButton;
-    [SerializeField] private Button _forButton;
-    [SerializeField] private Button _ifButton;
-    [SerializeField] private Button _collectButton;
     [SerializeField] private Button _deleteLastLineButton;
     
     private List<GameObject> _codeLines = new List<GameObject>();
@@ -47,16 +41,7 @@ public class CodeEditor : MonoBehaviour
         
         if (_turnRightButton != null)
             _turnRightButton.onClick.AddListener(() => AddCodeLine(_turnRightSprite, "turn_right"));
-        
-        if (_forButton != null)
-            _forButton.onClick.AddListener(() => AddCodeLine(_forSprite, "for"));
-        
-        if (_ifButton != null)
-            _ifButton.onClick.AddListener(() => AddCodeLine(_ifSprite, "if"));
-        
-        if (_collectButton != null)
-            _collectButton.onClick.AddListener(() => AddCodeLine(_collectSprite, "collect"));
-        
+    
         if (_deleteLastLineButton != null)
             _deleteLastLineButton.onClick.AddListener(DeleteLastLine);
     }
@@ -108,6 +93,7 @@ public class CodeEditor : MonoBehaviour
         _codeLines.Add(newLine);
     }
     
+    // Добавлено: метод удаления последней строки
     void DeleteLastLine()
     {
         if (_codeLines.Count > 0)

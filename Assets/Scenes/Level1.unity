@@ -391,8 +391,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 122.977036, y: -64.99448}
-  m_SizeDelta: {x: 396.04, y: 615.68896}
+  m_AnchoredPosition: {x: 152.655, y: -74.887}
+  m_SizeDelta: {x: 324.812, y: 580.075}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &540031874
 GameObject:
@@ -671,7 +671,7 @@ GameObject:
   - component: {fileID: 910677569}
   - component: {fileID: 910677572}
   - component: {fileID: 910677571}
-  - component: {fileID: 910677570}
+  - component: {fileID: 910677573}
   m_Layer: 5
   m_Name: CodeEditorPanel
   m_TagString: Untagged
@@ -701,30 +701,6 @@ RectTransform:
   m_AnchoredPosition: {x: 650.0001, y: 0}
   m_SizeDelta: {x: -1299.9998, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &910677570
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 910677568}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e96953f91fd4545a9b47b0704ed6e5ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CodeEditor
-  _moveForwardLinePrefab: {fileID: 3454224211906492330, guid: ab91c93cc43d2468eb1100c3ea08dec3, type: 3}
-  _turnLeftLinePrefab: {fileID: 6420939065854284449, guid: 8c03e8ad5ed4f4602956ce974ed325d0, type: 3}
-  _turnRightLinePrefab: {fileID: 3835858302036692318, guid: 2a31cc2f960eb4976a55b146b991b8c2, type: 3}
-  _codeLinesContainer: {fileID: 215056024}
-  _lineSpacing: 1
-  _firstLinePosition: {x: 150, y: 330}
-  _lineSize: {x: 1000, y: 300}
-  _lineScale: 100
-  _zOffset: -10
-  _moveForwardButton: {fileID: 540031876}
-  _turnLeftButton: {fileID: 1251692728}
-  _turnRightButton: {fileID: 1168678472}
 --- !u!114 &910677571
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -763,6 +739,30 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 910677568}
   m_CullTransparentMesh: 1
+--- !u!114 &910677573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 910677568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca62ec531db5f4896b63b91442c3d865, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CodeEditorLevel1
+  _moveForwardSprite: {fileID: -8203191263239802335, guid: cbfcdf178b8e5463b8d5926140b81dbc, type: 3}
+  _turnLeftSprite: {fileID: 8616669327447837791, guid: 5015c8482996141e1ab0c7d686dd9813, type: 3}
+  _turnRightSprite: {fileID: -6693428561845550806, guid: 5c1af0c32022c4ffb9304dfba85e8580, type: 3}
+  _codeLinesContainer: {fileID: 215056024}
+  _lineSpacing: 35
+  _firstLinePosition: {x: 0, y: 0}
+  _lineSize: {x: 130, y: 35}
+  _lineScale: 1
+  _moveForwardButton: {fileID: 540031876}
+  _turnLeftButton: {fileID: 1251692728}
+  _turnRightButton: {fileID: 1168678472}
+  _deleteLastLineButton: {fileID: 114244191}
 --- !u!1 &920359764
 GameObject:
   m_ObjectHideFlags: 0

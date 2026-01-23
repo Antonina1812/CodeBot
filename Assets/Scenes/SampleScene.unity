@@ -1965,6 +1965,9 @@ MonoBehaviour:
   _moveForwardSprite: {fileID: -8203191263239802335, guid: cbfcdf178b8e5463b8d5926140b81dbc, type: 3}
   _turnLeftSprite: {fileID: 8616669327447837791, guid: 5015c8482996141e1ab0c7d686dd9813, type: 3}
   _turnRightSprite: {fileID: -6693428561845550806, guid: 5c1af0c32022c4ffb9304dfba85e8580, type: 3}
+  _forSprite: {fileID: -293734762950549717, guid: 7409093b1abd04c019bc141964b0143b, type: 3}
+  _ifSprite: {fileID: 3002052857585923105, guid: 17487b4e4542a4a0fad2329c8f83ab38, type: 3}
+  _collectSprite: {fileID: 4901053292926111511, guid: 110756917d27d46348c74664401d8ea8, type: 3}
   _codeLinesContainer: {fileID: 1209891944}
   _lineSpacing: 35
   _firstLinePosition: {x: 0, y: 0}
@@ -1973,6 +1976,10 @@ MonoBehaviour:
   _moveForwardButton: {fileID: 999867897}
   _turnLeftButton: {fileID: 519270551}
   _turnRightButton: {fileID: 1074592204}
+  _forButton: {fileID: 1669908694}
+  _ifButton: {fileID: 1285701744}
+  _collectButton: {fileID: 1802572546}
+  _deleteLastLineButton: {fileID: 2138527992}
 --- !u!1 &1669908692
 GameObject:
   m_ObjectHideFlags: 0

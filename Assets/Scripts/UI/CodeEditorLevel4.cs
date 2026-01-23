@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-public class CodeEditor : MonoBehaviour
+public class CodeEditorLevel4 : MonoBehaviour
 {
     [Header("Спрайты строк кода")]
     [SerializeField] private Sprite _moveForwardSprite;
