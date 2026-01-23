@@ -8,8 +8,6 @@ public class CodeEditorLevel2 : MonoBehaviour
     [SerializeField] private Sprite _moveForwardSprite;
     [SerializeField] private Sprite _turnLeftSprite;
     [SerializeField] private Sprite _turnRightSprite;
-    [SerializeField] private Sprite _forSprite;
-    [SerializeField] private Sprite _ifSprite;
     [SerializeField] private Sprite _collectSprite;
     
     [Header("Настройки отображения")]
@@ -25,8 +23,6 @@ public class CodeEditorLevel2 : MonoBehaviour
     [SerializeField] private Button _moveForwardButton;
     [SerializeField] private Button _turnLeftButton;
     [SerializeField] private Button _turnRightButton;
-    [SerializeField] private Button _forButton;
-    [SerializeField] private Button _ifButton;
     [SerializeField] private Button _collectButton;
     [SerializeField] private Button _deleteLastLineButton;
     
@@ -47,12 +43,6 @@ public class CodeEditorLevel2 : MonoBehaviour
         
         if (_turnRightButton != null)
             _turnRightButton.onClick.AddListener(() => AddCodeLine(_turnRightSprite, "turn_right"));
-        
-        if (_forButton != null)
-            _forButton.onClick.AddListener(() => AddCodeLine(_forSprite, "for"));
-        
-        if (_ifButton != null)
-            _ifButton.onClick.AddListener(() => AddCodeLine(_ifSprite, "if"));
         
         if (_collectButton != null)
             _collectButton.onClick.AddListener(() => AddCodeLine(_collectSprite, "collect"));
