@@ -1734,10 +1734,10 @@ MonoBehaviour:
   _gridWidth: 7
   _gridHeight: 7
   _cellSize: 1
-  _startPosition: {x: 1, y: 2}
-  _finishPosition: {x: 4, y: 0}
-  _startPosition2: {x: 5, y: 5}
-  _finishPosition2: {x: 0, y: 6}
+  _startPosition: {x: 1, y: 0}
+  _finishPosition: {x: 6, y: 4}
+  _startPosition2: {x: 5, y: 6}
+  _finishPosition2: {x: 0, y: 2}
   _startCellSprite: {fileID: -7774404246977786185, guid: ae7cb2b6fc27d43ed84fd45c145d9f46, type: 3}
   _finishCellSprite: {fileID: 8707674300462247736, guid: 38729417473ef4687b622a0a93d35629, type: 3}
   _finishCellSprite2: {fileID: 21300000, guid: 5fbc0525057e5406382af1ce916cf24f, type: 3}
@@ -1745,17 +1745,29 @@ MonoBehaviour:
   _robotPrefab: {fileID: 1185938814535520587, guid: 69eebb02703e14c0299312de6bb229ac, type: 3}
   _robotPrefab2: {fileID: 1185938814535520587, guid: 69eebb02703e14c0299312de6bb229ac, type: 3}
   _coinPrefab: {fileID: 7519065532372414688, guid: 420c219b456a042a084b7df333fd3034, type: 3}
-  _computerPrefab: {fileID: 7466643488861386615, guid: f6cc0d934b1d846489f4d0b40e0cc5c0, type: 3}
-  _diskPrefab: {fileID: 8877785023585052280, guid: 84300d52169e1421f9e1075e92785d63, type: 3}
   _obstaclePositions:
   - {x: 0, y: 0}
-  - {x: 4, y: 4}
-  _coinPositions:
-  - {x: 1, y: 1}
+  - {x: 0, y: 3}
+  - {x: 0, y: 4}
+  - {x: 0, y: 6}
+  - {x: 1, y: 2}
+  - {x: 1, y: 3}
+  - {x: 2, y: 5}
+  - {x: 3, y: 2}
   - {x: 3, y: 3}
-  - {x: 5, y: 2}
-  _computerPosition: {x: 4, y: 2}
-  _diskPosition: {x: 2, y: 4}
+  - {x: 3, y: 4}
+  - {x: 4, y: 1}
+  - {x: 5, y: 3}
+  - {x: 5, y: 4}
+  - {x: 6, y: 0}
+  - {x: 6, y: 2}
+  - {x: 6, y: 3}
+  - {x: 6, y: 6}
+  _coinPositions:
+  - {x: 0, y: 1}
+  - {x: 2, y: 3}
+  - {x: 5, y: 0}
+  - {x: 5, y: 5}
 --- !u!1 &829789128
 GameObject:
   m_ObjectHideFlags: 0
