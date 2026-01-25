@@ -1018,6 +1018,9 @@ MonoBehaviour:
   _firstLinePosition: {x: 0, y: 0}
   _lineSize: {x: 130, y: 35}
   _lineScale: 1
+  _arrowSprite1: {fileID: 3312798837105470071, guid: 118026cf5cc314263895c1e35134b377, type: 3}
+  _arrowSprite2: {fileID: 1017879102727171100, guid: bd53ecd3cd91c419cba50c22cee95cfc, type: 3}
+  _arrowButtonOffset: 65
   _moveForwardButton: {fileID: 364361062}
   _turnLeftButton: {fileID: 842117824}
   _turnRightButton: {fileID: 2033721941}

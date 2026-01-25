@@ -199,26 +199,6 @@ public class CodeEditor : MonoBehaviour
         }
     }
     
-    [ContextMenu("Очистить редактор")]
-    public void ClearEditor()
-    {
-        // Удаляем все строки
-        foreach (GameObject line in _codeLines)
-        {
-            if (line != null)
-                Destroy(line);
-        }
-        _codeLines.Clear();
-        
-        // Удаляем все кнопки со стрелочками
-        foreach (GameObject arrowButton in _arrowButtons)
-        {
-            if (arrowButton != null)
-                Destroy(arrowButton);
-        }
-        _arrowButtons.Clear();
-    }
-    
     // Вспомогательный компонент для хранения данных кнопки
     private class ArrowButtonData : MonoBehaviour
     {

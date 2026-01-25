@@ -454,18 +454,19 @@ MonoBehaviour:
   _turnLeftSprite: {fileID: 8616669327447837791, guid: 5015c8482996141e1ab0c7d686dd9813, type: 3}
   _turnRightSprite: {fileID: -6693428561845550806, guid: 5c1af0c32022c4ffb9304dfba85e8580, type: 3}
   _forSprite: {fileID: -293734762950549717, guid: 7409093b1abd04c019bc141964b0143b, type: 3}
-  _ifSprite: {fileID: 0}
   _collectSprite: {fileID: 4901053292926111511, guid: 110756917d27d46348c74664401d8ea8, type: 3}
   _codeLinesContainer: {fileID: 918603166}
   _lineSpacing: 35
   _firstLinePosition: {x: 0, y: 0}
   _lineSize: {x: 130, y: 35}
   _lineScale: 1
+  _arrowSprite1: {fileID: 3312798837105470071, guid: 118026cf5cc314263895c1e35134b377, type: 3}
+  _arrowSprite2: {fileID: 1017879102727171100, guid: bd53ecd3cd91c419cba50c22cee95cfc, type: 3}
+  _arrowButtonOffset: 65
   _moveForwardButton: {fileID: 1856977786}
   _turnLeftButton: {fileID: 879558985}
   _turnRightButton: {fileID: 586005082}
   _forButton: {fileID: 79960288}
-  _ifButton: {fileID: 0}
   _collectButton: {fileID: 1471449758}
   _deleteLastLineButton: {fileID: 334125131}
 --- !u!1 &188290748
