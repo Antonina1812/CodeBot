@@ -6,6 +6,7 @@ TagManager:
   tags:
   - GridCell
   - Robot
+  - Coin
   layers:
   - Default
   - TransparentFX
