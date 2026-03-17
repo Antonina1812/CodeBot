@@ -13,54 +13,50 @@ public class CodeExecutor : MonoBehaviour
 
     private GridGenerator   _grid;
     private RobotController _robot;
-    private bool            _isRunning = false;
-    private Coroutine       _executionCoroutine;
+
+    private bool      _isRunning = false;
+    private Coroutine _executionCoroutine;
 
     void Start()
     {
         _grid = FindFirstObjectByType<GridGenerator>();
+
         if (_grid != null)
         {
             _robot = _grid.Robot1;
-            Debug.Log("CodeExecutor: робот найден через GridGenerator");
+            Debug.Log("Robot найден");
         }
         else
         {
-            Debug.LogError("CodeExecutor: GridGenerator не найден на сцене!");
+            Debug.LogError("GridGenerator НЕ найден!");
         }
 
-        if (_runButton != null) _runButton.onClick.AddListener(RunCode);
+        _runButton?.onClick.AddListener(RunCode);
     }
-
-    // ── Запуск ─────────────────────────────────────────
 
     public void RunCode()
     {
         if (_isRunning) return;
 
-        // Всегда сбрасываем уровень перед запуском
+        List<string> commands = _codeEditor.GetCommands();
+
         ResetLevel();
 
-        List<string> commands = _codeEditor.GetCommands();
         if (commands.Count == 0)
         {
-            Debug.Log("Уровень сброшен.");
+            Debug.Log("Нет команд");
             return;
         }
 
-        _executionCoroutine = StartCoroutine(ExecuteCommands(commands));
+        _executionCoroutine = StartCoroutine(Execute(commands));
     }
 
     public void StopCode()
     {
         if (_executionCoroutine != null)
             StopCoroutine(_executionCoroutine);
-
         _isRunning = false;
-        Debug.Log("Выполнение остановлено.");
     }
-
-    // ── Сброс уровня ───────────────────────────────────
 
     private void ResetLevel()
     {
@@ -79,42 +75,87 @@ public class CodeExecutor : MonoBehaviour
         }
     }
 
-    // ── Исполнитель ────────────────────────────────────
-
-    private IEnumerator ExecuteCommands(List<string> commands)
+    private IEnumerator Execute(List<string> commands)
     {
         _isRunning = true;
-        Debug.Log($"Запуск: {commands.Count} команд");
+        yield return StartCoroutine(RunBlock(commands, 0));
+        _isRunning = false;
+        Debug.Log("Готово");
+    }
 
-        foreach (string cmd in commands)
+    private IEnumerator RunBlock(List<string> commands, int startIndex)
+    {
+        int i = startIndex;
+
+        while (i < commands.Count)
         {
-            Debug.Log($"Выполняю: {cmd}");
+            string cmd = commands[i];
 
-            switch (cmd)
+            if (cmd.StartsWith("for:"))
             {
-                case "move_forward":
-                    yield return StartCoroutine(_robot.MoveForward());
-                    break;
+                int count    = int.Parse(cmd.Substring(4));
+                int endIndex = FindEndFor(commands, i);
 
-                case "turn_left":
-                    yield return StartCoroutine(_robot.TurnLeft());
-                    break;
+                if (endIndex == -1)
+                {
+                    Debug.LogError("Не найден end_for!");
+                    yield break;
+                }
 
-                case "turn_right":
-                    yield return StartCoroutine(_robot.TurnRight());
-                    break;
+                for (int k = 0; k < count; k++)
+                    yield return StartCoroutine(RunBlock(commands, i + 1));
 
-                case "collect":
-                    yield return StartCoroutine(_robot.Collect());
-                    break;
+                i = endIndex + 1;
+                continue;
+            }
 
-                default:
-                    Debug.LogWarning($"Неизвестная команда: {cmd}");
-                    break;
+            if (cmd == "end_for")
+                yield break;
+
+            yield return StartCoroutine(ExecuteSingleCommand(cmd));
+            i++;
+        }
+    }
+
+    private int FindEndFor(List<string> commands, int startIndex)
+    {
+        int depth = 0;
+
+        for (int i = startIndex + 1; i < commands.Count; i++)
+        {
+            if (commands[i].StartsWith("for:")) depth++;
+            else if (commands[i] == "end_for")
+            {
+                if (depth == 0) return i;
+                depth--;
             }
         }
 
-        _isRunning = false;
-        Debug.Log("Программа завершена.");
+        return -1;
+    }
+
+    private IEnumerator ExecuteSingleCommand(string cmd)
+    {
+        switch (cmd)
+        {
+            case "move_forward":
+                yield return StartCoroutine(_robot.MoveForward());
+                break;
+            case "turn_left":
+                yield return StartCoroutine(_robot.TurnLeft());
+                break;
+            case "turn_right":
+                yield return StartCoroutine(_robot.TurnRight());
+                break;
+            case "collect":
+                yield return StartCoroutine(_robot.Collect());
+                break;
+            case "insert":
+                yield return StartCoroutine(_robot.Insert());
+                break;
+            default:
+                Debug.LogWarning($"Неизвестная команда: {cmd}");
+                break;
+        }
     }
 }

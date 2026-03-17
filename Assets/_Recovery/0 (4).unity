@@ -472,6 +472,7 @@ MonoBehaviour:
   _turnRightButton: {fileID: 586005082}
   _collectButton: {fileID: 1471449758}
   _forOpenButton: {fileID: 79960288}
+  _forCloseButton: {fileID: 0}
   _deleteLastLineButton: {fileID: 334125131}
   _forCountInput: {fileID: 739563204}
 --- !u!1 &188290748

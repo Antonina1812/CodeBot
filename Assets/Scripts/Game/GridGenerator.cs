@@ -156,8 +156,8 @@ public class GridGenerator : MonoBehaviour
         if (_robotPrefab == null) return;
 
         Vector3 robotPosition = new Vector3(
-            _startPosition.x * _cellSize,
-            _startPosition.y * _cellSize,
+            transform.position.x + _startPosition.x * _cellSize,
+            transform.position.y + _startPosition.y * _cellSize,
             -0.5f
         );
 
@@ -177,8 +177,8 @@ public class GridGenerator : MonoBehaviour
         if (_robotPrefab2 == null) return;
 
         Vector3 robotPosition = new Vector3(
-            _startPosition2.x * _cellSize,
-            _startPosition2.y * _cellSize,
+            transform.position.x + _startPosition2.x * _cellSize,
+            transform.position.y + _startPosition2.y * _cellSize,
             -0.5f
         );
 
@@ -193,8 +193,8 @@ public class GridGenerator : MonoBehaviour
     void PlaceItem(GameObject prefab, Vector2Int gridPosition, string itemName, float zPosition)
     {
         Vector3 worldPosition = new Vector3(
-            gridPosition.x * _cellSize,
-            gridPosition.y * _cellSize,
+            transform.position.x + gridPosition.x * _cellSize,
+            transform.position.y + gridPosition.y * _cellSize,
             zPosition
         );
 

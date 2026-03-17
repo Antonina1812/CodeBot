@@ -20,6 +20,8 @@ public class RobotController : MonoBehaviour
 
     private SpriteRenderer _spriteRenderer;
 
+    private bool _hasDisk = false; // держит ли робот диск
+
     public bool IsBusy { get; private set; }
 
     public void Init(float tileSize, int gridWidth, int gridHeight, Sprite spriteDown, Sprite spriteRight, Sprite spriteLeft)
@@ -71,6 +73,21 @@ public class RobotController : MonoBehaviour
         transform.rotation = Quaternion.identity;
     }
 
+    private bool IsObstacleAt(Vector2 worldPos)
+    {
+        try
+        {
+            GameObject[] obstacles = GameObject.FindGameObjectsWithTag("Obstacle");
+            foreach (var obs in obstacles)
+            {
+                if (Vector2.Distance((Vector2)obs.transform.position, worldPos) < _tileSize * 0.5f)
+                    return true;
+            }
+        }
+        catch { }
+        return false;
+    }
+
     // ── Команды ────────────────────────────────────────
 
     public IEnumerator MoveForward()
@@ -82,14 +99,15 @@ public class RobotController : MonoBehaviour
         int targetX = Mathf.RoundToInt((target.x - _gridOrigin.x) / _tileSize);
         int targetY = Mathf.RoundToInt((target.y - _gridOrigin.y) / _tileSize);
 
-        if (targetX >= 0 && targetX < _gridWidth && targetY >= 0 && targetY < _gridHeight)
-        {
+        bool inBounds    = targetX >= 0 && targetX < _gridWidth && targetY >= 0 && targetY < _gridHeight;
+        bool hasObstacle = IsObstacleAt(target);
+
+        if (inBounds && !hasObstacle)
             yield return SmoothMove(start, target);
-        }
-        else
-        {
+        else if (!inBounds)
             Debug.LogWarning("Робот упёрся в границу поля!");
-        }
+        else
+            Debug.LogWarning("Путь заблокирован препятствием!");
 
         IsBusy = false;
     }
@@ -115,26 +133,85 @@ public class RobotController : MonoBehaviour
     public IEnumerator Collect()
     {
         IsBusy = true;
+        Vector2 robotPos = transform.position;
 
-        GameObject[] coins = GameObject.FindGameObjectsWithTag("Coin");
-        Vector2 robotPos   = transform.position;
-        bool found         = false;
-
-        foreach (GameObject coin in coins)
+        // Подбираем монету
+        try
         {
-            Vector2 coinPos = coin.transform.position;
-            if (Vector2.Distance(robotPos, coinPos) < _tileSize * 0.5f)
+            foreach (GameObject coin in GameObject.FindGameObjectsWithTag("Coin"))
             {
-                Destroy(coin);
-                Debug.Log("Монета подобрана!");
-                found = true;
-                break;
+                if (Vector2.Distance(robotPos, (Vector2)coin.transform.position) < _tileSize * 0.5f)
+                {
+                    Destroy(coin);
+                    Debug.Log("Монета подобрана!");
+                    IsBusy = false;
+                    yield break;
+                }
             }
         }
+        catch { }
 
-        if (!found)
-            Debug.LogWarning("Монеты на этой клетке нет.");
+        // Подбираем диск
+        try
+        {
+            foreach (GameObject disk in GameObject.FindGameObjectsWithTag("Disk"))
+            {
+                if (Vector2.Distance(robotPos, (Vector2)disk.transform.position) < _tileSize * 0.5f)
+                {
+                    Destroy(disk);
+                    _hasDisk = true;
+                    Debug.Log("Диск подобран!");
+                    IsBusy = false;
+                    yield break;
+                }
+            }
+        }
+        catch { }
 
+        Debug.LogWarning("Нечего подбирать на этой клетке.");
+        IsBusy = false;
+        yield break;
+    }
+
+    public IEnumerator Insert()
+    {
+        IsBusy = true;
+
+        if (!_hasDisk)
+        {
+            Debug.LogWarning("У робота нет диска!");
+            IsBusy = false;
+            yield break;
+        }
+
+        // Робот должен смотреть вверх (directionAngle == 0)
+        if (_directionAngle != 0)
+        {
+            Debug.LogWarning("Робот должен смотреть лицом к экрану (вверх) чтобы вставить диск!");
+            IsBusy = false;
+            yield break;
+        }
+
+        // Компьютер должен быть строго над роботом
+        Vector2 robotPos     = transform.position;
+        Vector2 aboveRobotPos = robotPos + Vector2.up * _tileSize;
+
+        try
+        {
+            foreach (GameObject computer in GameObject.FindGameObjectsWithTag("Computer"))
+            {
+                if (Vector2.Distance((Vector2)computer.transform.position, aboveRobotPos) < _tileSize * 0.5f)
+                {
+                    _hasDisk = false;
+                    Debug.Log("Диск вставлен в компьютер!");
+                    IsBusy = false;
+                    yield break;
+                }
+            }
+        }
+        catch { }
+
+        Debug.LogWarning("Компьютер не найден над роботом!");
         IsBusy = false;
         yield break;
     }
