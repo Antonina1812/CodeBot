@@ -16,18 +16,17 @@ public class CodeEditor : MonoBehaviour
 
     [Header("UI")]
     [SerializeField] private RectTransform _codeLinesContainer;
-    [SerializeField] private float   _lineSpacing       = 40f;
-    [SerializeField] private Vector2 _firstLinePosition = new Vector2(150f, -330f);
+    [SerializeField] private float   _lineSpacing       = 35f;
+    [SerializeField] private Vector2 _firstLinePosition = new Vector2(10f, -10f);
     [SerializeField] private Vector2 _lineSize          = new Vector2(150f, 30f);
     [SerializeField] private float   _lineScale         = 1f;
-    [SerializeField] private float   _indentOffset      = 30f;
+    [SerializeField] private float   _indentOffset      = 20f;
 
     [Header("FOR text")]
-    [SerializeField] private Color   _forKeywordColor  = new Color(0.4f, 0.7f, 1f);
-    [SerializeField] private Color   _forVariableColor = new Color(1f, 0.6f, 0.2f);
-    [SerializeField] private Color   _forNumberColor   = new Color(0.5f, 1f, 0.5f);
-    [SerializeField] private float   _forLineFontSize  = 14f;
-    [SerializeField] private Vector2 _forLineSize      = new Vector2(270f, 30f);
+    [SerializeField] private Color _forKeywordColor  = new Color(0.4f, 0.7f, 1f);
+    [SerializeField] private Color _forVariableColor = new Color(1f, 0.6f, 0.2f);
+    [SerializeField] private Color _forNumberColor   = new Color(0.5f, 1f, 0.5f);
+    [SerializeField] private float _forLineFontSize  = 14f;
 
     [Header("Buttons")]
     [SerializeField] private Button _moveForwardButton;
@@ -45,7 +44,10 @@ public class CodeEditor : MonoBehaviour
     {
         public GameObject obj;
         public int        depth;
-        public bool       hidden;
+        public bool       isFor;
+        public bool       isClosed;
+        public Image      arrowImage;
+        public Button     arrowButton;
     }
 
     private List<CodeLineData> _lines    = new List<CodeLineData>();
@@ -70,7 +72,6 @@ public class CodeEditor : MonoBehaviour
     public List<string> GetCommands()
     {
         List<string> result = new List<string>(_commands);
-        // Автоматически закрываем незакрытые циклы
         int depth = 0;
         foreach (string cmd in result)
         {
@@ -107,7 +108,7 @@ public class CodeEditor : MonoBehaviour
 
         var rt = line.AddComponent<RectTransform>();
         rt.anchorMin = rt.anchorMax = rt.pivot = new Vector2(0, 1);
-        rt.sizeDelta  = _forLineSize;
+        rt.sizeDelta  = _lineSize;
         rt.localScale = new Vector3(_lineScale, _lineScale, 1f);
 
         var text = line.AddComponent<TextMeshProUGUI>();
@@ -115,58 +116,36 @@ public class CodeEditor : MonoBehaviour
         text.fontSize = _forLineFontSize;
 
         string kw  = ColorUtility.ToHtmlStringRGB(_forKeywordColor);
-        string var = ColorUtility.ToHtmlStringRGB(_forVariableColor);
+        string vr  = ColorUtility.ToHtmlStringRGB(_forVariableColor);
         string num = ColorUtility.ToHtmlStringRGB(_forNumberColor);
-        text.text = $"<color=#{kw}>for</color> <color=#{var}>i</color> <color=#{kw}>in range</color>(<color=#{num}>{count}</color>):";
+        text.text = $"  <color=#{kw}>for</color> <color=#{vr}>i</color> <color=#{kw}>in range</color>(<color=#{num}>{count}</color>):";
 
-        // Стрелка на строке for
+        // Стрелка вниз (открыт)
         GameObject arrowObj = new GameObject("Arrow");
         arrowObj.transform.SetParent(line.transform, false);
 
         var arrowRT = arrowObj.AddComponent<RectTransform>();
         arrowRT.anchorMin = arrowRT.anchorMax = arrowRT.pivot = new Vector2(0f, 0.5f);
-        arrowRT.anchoredPosition = new Vector2(-28f, -15f);
-        arrowRT.sizeDelta = new Vector2(24f, 24f);
+        arrowRT.anchoredPosition = new Vector2(2f, -_lineSize.y * 0.5f);
+        arrowRT.sizeDelta = new Vector2(16f, 16f);
 
         var arrowImg = arrowObj.AddComponent<Image>();
         arrowImg.sprite = _forOpenSprite;
 
         var arrowBtn = arrowObj.AddComponent<Button>();
 
-        CodeLineData data = new CodeLineData { obj = line, depth = depth };
-        bool isOpen = true;
-
-        arrowBtn.onClick.AddListener(() =>
+        CodeLineData data = new CodeLineData
         {
-            isOpen = !isOpen;
-            arrowImg.sprite = isOpen ? _forOpenSprite : _forCloseSprite;
+            obj         = line,
+            depth       = depth,
+            isFor       = true,
+            isClosed    = false,
+            arrowImage  = arrowImg,
+            arrowButton = arrowBtn
+        };
 
-            if (!isOpen)
-            {
-                // Закрываем — добавляем end_for
-                int savedDepth = _currentDepth;
-                _currentDepth = depth;
-                AddCodeLine(_forCloseSprite, "end_for");
-                _currentDepth = savedDepth;
-                RecalculateDepth();
-            }
-            else
-            {
-                // Открываем — убираем последний end_for
-                for (int i = _commands.Count - 1; i >= 0; i--)
-                {
-                    if (_commands[i] == "end_for")
-                    {
-                        Destroy(_lines[i].obj);
-                        _lines.RemoveAt(i);
-                        _commands.RemoveAt(i);
-                        break;
-                    }
-                }
-                RecalculateDepth();
-                RefreshLayout();
-            }
-        });
+        // Стрелка — только закрытие, одностороннее
+        arrowBtn.onClick.AddListener(() => CloseFor(data));
 
         _lines.Add(data);
         _commands.Add($"for:{count}");
@@ -175,6 +154,27 @@ public class CodeEditor : MonoBehaviour
         _currentDepth++;
 
         RefreshLayout();
+    }
+
+    // Закрыть цикл — только один раз, стрелка становится неактивной
+    void CloseFor(CodeLineData forData)
+    {
+        if (forData.isClosed) return; // уже закрыт
+
+        forData.isClosed = true;
+        forData.arrowImage.sprite = _forCloseSprite;
+
+        // Отключаем кнопку — цикл нельзя переоткрыть
+        forData.arrowButton.interactable = false;
+
+        // Добавляем end_for в команды
+        _commands.Add("end_for");
+
+        // Уменьшаем глубину для новых команд
+        if (_forStack.Count > 0)
+            _currentDepth = _forStack.Pop();
+        else
+            _currentDepth = Mathf.Max(0, _currentDepth - 1);
     }
 
     // ── ОБЫЧНЫЕ КОМАНДЫ ────────────────────────────────
@@ -211,10 +211,50 @@ public class CodeEditor : MonoBehaviour
     {
         if (_lines.Count == 0) return;
 
-        int last = _lines.Count - 1;
-        Destroy(_lines[last].obj);
+        int last        = _lines.Count - 1;
+        CodeLineData ld = _lines[last];
+
+        // Удаляем последнюю команду из _commands
+        // Если это был for — нужно убрать его end_for тоже (если закрыт)
+        if (ld.isFor)
+        {
+            // Убираем end_for если цикл был закрыт
+            if (ld.isClosed)
+            {
+                for (int i = _commands.Count - 1; i >= 0; i--)
+                {
+                    if (_commands[i] == "end_for")
+                    {
+                        _commands.RemoveAt(i);
+                        break;
+                    }
+                }
+            }
+            // Убираем саму команду for:N
+            for (int i = _commands.Count - 1; i >= 0; i--)
+            {
+                if (_commands[i].StartsWith("for:"))
+                {
+                    _commands.RemoveAt(i);
+                    break;
+                }
+            }
+        }
+        else
+        {
+            // Обычная команда — удаляем последнюю не-end_for
+            for (int i = _commands.Count - 1; i >= 0; i--)
+            {
+                if (!_commands[i].Equals("end_for"))
+                {
+                    _commands.RemoveAt(i);
+                    break;
+                }
+            }
+        }
+
+        Destroy(ld.obj);
         _lines.RemoveAt(last);
-        _commands.RemoveAt(last);
 
         RecalculateDepth();
         RefreshLayout();
@@ -244,15 +284,13 @@ public class CodeEditor : MonoBehaviour
 
     void RefreshLayout()
     {
-        int visibleIndex = 0;
         for (int i = 0; i < _lines.Count; i++)
         {
-            var rt = _lines[i].obj.GetComponent<RectTransform>();
-            rt.anchoredPosition = new Vector2(
+            var r = _lines[i].obj.GetComponent<RectTransform>();
+            r.anchoredPosition = new Vector2(
                 _firstLinePosition.x + _lines[i].depth * _indentOffset,
-                _firstLinePosition.y - visibleIndex * _lineSpacing
+                _firstLinePosition.y - i * _lineSpacing
             );
-            visibleIndex++;
         }
     }
 }
