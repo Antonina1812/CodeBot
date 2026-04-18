@@ -8,8 +8,11 @@ public class GameManager : MonoBehaviour
     // Ссылка на генератор сетки, чтобы узнать размер клетки
     [SerializeField] private GridGenerator _gridGenerator;
 
+    [SerializeField] private GameData _gameData; // ScriptableObject с данными
+
     void Start()
     {
+        SaveSystem.Load(_gameData); // загружаем сохранение в SO
         //SpawnRobot();
     }
 
@@ -34,5 +37,16 @@ public class GameManager : MonoBehaviour
         // Создаем робота
         GameObject robot = Instantiate(_robotPrefab, robotWorldPosition, Quaternion.identity);
         robot.name = "PlayerRobot";
+    }
+
+    // Вызывай когда уровень пройден
+    public void CompleteLevel(int currentLevelIndex)
+    {
+        if (currentLevelIndex >= _gameData.lastUnlockedLevel)
+        {
+            _gameData.lastUnlockedLevel = currentLevelIndex + 1;
+        }
+
+        SaveSystem.Save(_gameData);
     }
 }
