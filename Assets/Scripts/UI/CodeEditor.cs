@@ -65,12 +65,9 @@ public class CodeEditor : MonoBehaviour
         _deleteLastLineButton?.onClick.AddListener(DeleteLastLine);
     }
 
-    // ── Публичный API ──────────────────────────────────
-
     public List<string> GetCommands()
     {
         List<string> result = new List<string>(_commands);
-        // Автоматически закрываем незакрытые циклы
         int depth = 0;
         foreach (string cmd in result)
         {
@@ -90,8 +87,6 @@ public class CodeEditor : MonoBehaviour
         _currentDepth = 0;
         _forStack.Clear();
     }
-
-    // ── FOR ────────────────────────────────────────────
 
     void AddForLine()
     {
@@ -119,7 +114,6 @@ public class CodeEditor : MonoBehaviour
         string num = ColorUtility.ToHtmlStringRGB(_forNumberColor);
         text.text = $"<color=#{kw}>for</color> <color=#{var}>i</color> <color=#{kw}>in range</color>(<color=#{num}>{count}</color>):";
 
-        // Стрелка на строке for
         GameObject arrowObj = new GameObject("Arrow");
         arrowObj.transform.SetParent(line.transform, false);
 
@@ -143,7 +137,6 @@ public class CodeEditor : MonoBehaviour
 
             if (!isOpen)
             {
-                // Закрываем — добавляем end_for
                 int savedDepth = _currentDepth;
                 _currentDepth = depth;
                 AddCodeLine(_forCloseSprite, "end_for");
@@ -152,7 +145,6 @@ public class CodeEditor : MonoBehaviour
             }
             else
             {
-                // Открываем — убираем последний end_for
                 for (int i = _commands.Count - 1; i >= 0; i--)
                 {
                     if (_commands[i] == "end_for")
@@ -176,8 +168,6 @@ public class CodeEditor : MonoBehaviour
 
         RefreshLayout();
     }
-
-    // ── ОБЫЧНЫЕ КОМАНДЫ ────────────────────────────────
 
     void AddCodeLine(Sprite sprite, string command)
     {
@@ -204,8 +194,6 @@ public class CodeEditor : MonoBehaviour
 
         RefreshLayout();
     }
-
-    // ── УДАЛЕНИЕ ───────────────────────────────────────
 
     void DeleteLastLine()
     {
@@ -240,18 +228,21 @@ public class CodeEditor : MonoBehaviour
         }
     }
 
-    // ── РАССТАНОВКА СТРОК ──────────────────────────────
-
     void RefreshLayout()
     {
         int visibleIndex = 0;
         for (int i = 0; i < _lines.Count; i++)
         {
+            if (_lines[i].obj == null) continue;
+            
             var rt = _lines[i].obj.GetComponent<RectTransform>();
-            rt.anchoredPosition = new Vector2(
-                _firstLinePosition.x + _lines[i].depth * _indentOffset,
-                _firstLinePosition.y - visibleIndex * _lineSpacing
-            );
+            if (rt != null)
+            {
+                rt.anchoredPosition = new Vector2(
+                    _firstLinePosition.x + _lines[i].depth * _indentOffset,
+                    _firstLinePosition.y - visibleIndex * _lineSpacing
+                );
+            }
             visibleIndex++;
         }
     }
