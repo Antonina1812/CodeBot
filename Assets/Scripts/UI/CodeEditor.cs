@@ -67,8 +67,6 @@ public class CodeEditor : MonoBehaviour
         _deleteLastLineButton?.onClick.AddListener(DeleteLastLine);
     }
 
-    // ── Публичный API ──────────────────────────────────
-
     public List<string> GetCommands()
     {
         List<string> result = new List<string>(_commands);
@@ -91,8 +89,6 @@ public class CodeEditor : MonoBehaviour
         _currentDepth = 0;
         _forStack.Clear();
     }
-
-    // ── FOR ────────────────────────────────────────────
 
     void AddForLine()
     {
@@ -120,7 +116,6 @@ public class CodeEditor : MonoBehaviour
         string num = ColorUtility.ToHtmlStringRGB(_forNumberColor);
         text.text = $"  <color=#{kw}>for</color> <color=#{vr}>i</color> <color=#{kw}>in range</color>(<color=#{num}>{count}</color>):";
 
-        // Стрелка вниз (открыт)
         GameObject arrowObj = new GameObject("Arrow");
         arrowObj.transform.SetParent(line.transform, false);
 
@@ -205,8 +200,6 @@ public class CodeEditor : MonoBehaviour
         RefreshLayout();
     }
 
-    // ── УДАЛЕНИЕ ───────────────────────────────────────
-
     void DeleteLastLine()
     {
         if (_lines.Count == 0) return;
@@ -279,8 +272,6 @@ public class CodeEditor : MonoBehaviour
             }
         }
     }
-
-    // ── РАССТАНОВКА СТРОК ──────────────────────────────
 
     void RefreshLayout()
     {
