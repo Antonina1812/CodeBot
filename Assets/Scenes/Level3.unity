@@ -454,6 +454,7 @@ MonoBehaviour:
   _turnLeftSprite: {fileID: 8616669327447837791, guid: 5015c8482996141e1ab0c7d686dd9813, type: 3}
   _turnRightSprite: {fileID: -6693428561845550806, guid: 5c1af0c32022c4ffb9304dfba85e8580, type: 3}
   _collectSprite: {fileID: 4901053292926111511, guid: 110756917d27d46348c74664401d8ea8, type: 3}
+  _insertSprite: {fileID: 0}
   _forOpenSprite: {fileID: 1017879102727171100, guid: bd53ecd3cd91c419cba50c22cee95cfc, type: 3}
   _forCloseSprite: {fileID: 3312798837105470071, guid: 118026cf5cc314263895c1e35134b377, type: 3}
   _codeLinesContainer: {fileID: 918603166}
@@ -466,11 +467,11 @@ MonoBehaviour:
   _forVariableColor: {r: 1, g: 0.6, b: 0.2, a: 1}
   _forNumberColor: {r: 0.5, g: 1, b: 0.5, a: 1}
   _forLineFontSize: 14
-  _forLineSize: {x: 270, y: 30}
   _moveForwardButton: {fileID: 1856977786}
   _turnLeftButton: {fileID: 879558985}
   _turnRightButton: {fileID: 586005082}
   _collectButton: {fileID: 1471449758}
+  _insertButton: {fileID: 0}
   _forOpenButton: {fileID: 79960288}
   _deleteLastLineButton: {fileID: 334125131}
   _forCountInput: {fileID: 739563204}
@@ -1388,6 +1389,7 @@ GameObject:
   - component: {fileID: 739563206}
   - component: {fileID: 739563205}
   - component: {fileID: 739563204}
+  - component: {fileID: 739563207}
   m_Layer: 5
   m_Name: BtnForCount
   m_TagString: Untagged
@@ -1555,6 +1557,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 739563202}
   m_CullTransparentMesh: 1
+--- !u!114 &739563207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 739563202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c5692b551317f54dad7f805b458948e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InputFieldClear
 --- !u!1 &822588144
 GameObject:
   m_ObjectHideFlags: 0
@@ -1617,6 +1631,7 @@ MonoBehaviour:
   _computerPrefab: {fileID: 0}
   _diskPrefab: {fileID: 0}
   _robotSpriteDown: {fileID: 21300000, guid: 554ec528a63e64e578c030b623841db9, type: 3}
+  _robotSpriteUp: {fileID: -2103097836041421020, guid: ea6c8ae100c1944d9824a1de06036a17, type: 3}
   _robotSpriteRight: {fileID: 21300000, guid: ee63712a70dc04e959b8f8c8fc0315cd, type: 3}
   _robotSpriteLeft: {fileID: 21300000, guid: da004ad990b824ccf83490e96ea5116e, type: 3}
   _obstaclePositions:

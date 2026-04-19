@@ -347,7 +347,6 @@ MonoBehaviour:
   _forVariableColor: {r: 1, g: 0.6, b: 0.2, a: 1}
   _forNumberColor: {r: 0.5, g: 1, b: 0.5, a: 1}
   _forLineFontSize: 14
-  _forLineSize: {x: 270, y: 30}
   _moveForwardButton: {fileID: 528073328}
   _turnLeftButton: {fileID: 269630368}
   _turnRightButton: {fileID: 326911349}
@@ -1854,6 +1853,7 @@ MonoBehaviour:
   _computerPrefab: {fileID: 7466643488861386615, guid: f6cc0d934b1d846489f4d0b40e0cc5c0, type: 3}
   _diskPrefab: {fileID: 8877785023585052280, guid: 84300d52169e1421f9e1075e92785d63, type: 3}
   _robotSpriteDown: {fileID: 21300000, guid: 554ec528a63e64e578c030b623841db9, type: 3}
+  _robotSpriteUp: {fileID: -2103097836041421020, guid: ea6c8ae100c1944d9824a1de06036a17, type: 3}
   _robotSpriteRight: {fileID: 21300000, guid: ee63712a70dc04e959b8f8c8fc0315cd, type: 3}
   _robotSpriteLeft: {fileID: 21300000, guid: da004ad990b824ccf83490e96ea5116e, type: 3}
   _obstaclePositions:

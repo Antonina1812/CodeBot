@@ -12,6 +12,7 @@ public class RobotController : MonoBehaviour
     private Vector2 _gridOrigin;
 
     private Sprite _spriteDown;
+    private Sprite _spriteUp;
     private Sprite _spriteRight;
     private Sprite _spriteLeft;
 
@@ -20,17 +21,18 @@ public class RobotController : MonoBehaviour
 
     private SpriteRenderer _spriteRenderer;
 
-    private bool _hasDisk = false; // держит ли робот диск
+    private bool _hasDisk = false;
 
     public bool IsBusy { get; private set; }
 
-    public void Init(float tileSize, int gridWidth, int gridHeight, Sprite spriteDown, Sprite spriteRight, Sprite spriteLeft)
+    public void Init(float tileSize, int gridWidth, int gridHeight, Sprite spriteDown, Sprite spriteUp, Sprite spriteRight, Sprite spriteLeft)
     {
         _tileSize       = tileSize;
         _gridWidth      = gridWidth;
         _gridHeight     = gridHeight;
         _gridOrigin     = new Vector2(transform.parent.position.x, transform.parent.position.y);
         _spriteDown     = spriteDown;
+        _spriteUp       = spriteUp;
         _spriteRight    = spriteRight;
         _spriteLeft     = spriteLeft;
         _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -53,22 +55,14 @@ public class RobotController : MonoBehaviour
         _spriteRenderer.flipX = false;
         _spriteRenderer.flipY = false;
 
-        switch (_directionAngle)
+        _spriteRenderer.sprite = _directionAngle switch
         {
-            case 0:
-                _spriteRenderer.sprite = _spriteDown;
-                _spriteRenderer.flipY  = true;
-                break;
-            case 90:
-                _spriteRenderer.sprite = _spriteRight;
-                break;
-            case 180:
-                _spriteRenderer.sprite = _spriteDown;
-                break;
-            case 270:
-                _spriteRenderer.sprite = _spriteLeft;
-                break;
-        }
+            0   => _spriteUp   != null ? _spriteUp   : _spriteDown,
+            90  => _spriteRight,
+            180 => _spriteDown,
+            270 => _spriteLeft,
+            _   => _spriteDown
+        };
 
         transform.rotation = Quaternion.identity;
     }
@@ -77,12 +71,9 @@ public class RobotController : MonoBehaviour
     {
         try
         {
-            GameObject[] obstacles = GameObject.FindGameObjectsWithTag("Obstacle");
-            foreach (var obs in obstacles)
-            {
+            foreach (var obs in GameObject.FindGameObjectsWithTag("Obstacle"))
                 if (Vector2.Distance((Vector2)obs.transform.position, worldPos) < _tileSize * 0.5f)
                     return true;
-            }
         }
         catch { }
         return false;
@@ -135,7 +126,6 @@ public class RobotController : MonoBehaviour
         IsBusy = true;
         Vector2 robotPos = transform.position;
 
-        // Подбираем монету
         try
         {
             foreach (GameObject coin in GameObject.FindGameObjectsWithTag("Coin"))
@@ -151,7 +141,6 @@ public class RobotController : MonoBehaviour
         }
         catch { }
 
-        // Подбираем диск
         try
         {
             foreach (GameObject disk in GameObject.FindGameObjectsWithTag("Disk"))
@@ -184,17 +173,14 @@ public class RobotController : MonoBehaviour
             yield break;
         }
 
-        // Робот должен смотреть вверх (directionAngle == 0)
         if (_directionAngle != 0)
         {
-            Debug.LogWarning("Робот должен смотреть лицом к экрану (вверх) чтобы вставить диск!");
+            Debug.LogWarning("Робот должен смотреть вверх чтобы вставить диск!");
             IsBusy = false;
             yield break;
         }
 
-        // Компьютер должен быть строго над роботом
-        Vector2 robotPos     = transform.position;
-        Vector2 aboveRobotPos = robotPos + Vector2.up * _tileSize;
+        Vector2 aboveRobotPos = (Vector2)transform.position + Vector2.up * _tileSize;
 
         try
         {

@@ -706,6 +706,7 @@ MonoBehaviour:
   _computerPrefab: {fileID: 0}
   _diskPrefab: {fileID: 0}
   _robotSpriteDown: {fileID: 21300000, guid: 554ec528a63e64e578c030b623841db9, type: 3}
+  _robotSpriteUp: {fileID: -2103097836041421020, guid: ea6c8ae100c1944d9824a1de06036a17, type: 3}
   _robotSpriteRight: {fileID: 21300000, guid: ee63712a70dc04e959b8f8c8fc0315cd, type: 3}
   _robotSpriteLeft: {fileID: 21300000, guid: da004ad990b824ccf83490e96ea5116e, type: 3}
   _obstaclePositions:
@@ -817,16 +818,27 @@ MonoBehaviour:
   _turnLeftSprite: {fileID: 8616669327447837791, guid: 5015c8482996141e1ab0c7d686dd9813, type: 3}
   _turnRightSprite: {fileID: -6693428561845550806, guid: 5c1af0c32022c4ffb9304dfba85e8580, type: 3}
   _collectSprite: {fileID: 0}
+  _insertSprite: {fileID: 0}
+  _forOpenSprite: {fileID: 0}
+  _forCloseSprite: {fileID: 0}
   _codeLinesContainer: {fileID: 215056024}
   _lineSpacing: 35
   _firstLinePosition: {x: 0, y: 0}
   _lineSize: {x: 130, y: 35}
   _lineScale: 1
+  _indentOffset: 20
+  _forKeywordColor: {r: 0.4, g: 0.7, b: 1, a: 1}
+  _forVariableColor: {r: 1, g: 0.6, b: 0.2, a: 1}
+  _forNumberColor: {r: 0.5, g: 1, b: 0.5, a: 1}
+  _forLineFontSize: 14
   _moveForwardButton: {fileID: 540031876}
   _turnLeftButton: {fileID: 1251692728}
   _turnRightButton: {fileID: 1168678472}
   _collectButton: {fileID: 0}
+  _insertButton: {fileID: 0}
+  _forOpenButton: {fileID: 0}
   _deleteLastLineButton: {fileID: 114244191}
+  _forCountInput: {fileID: 0}
 --- !u!1 &920359764
 GameObject:
   m_ObjectHideFlags: 0

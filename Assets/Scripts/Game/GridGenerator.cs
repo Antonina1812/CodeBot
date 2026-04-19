@@ -5,14 +5,14 @@ public class GridGenerator : MonoBehaviour
 {
     [Header("Настройки поля")]
     [SerializeField] private GameObject _cellPrefab;
-    [SerializeField] private int _gridWidth   = 7;
-    [SerializeField] private int _gridHeight  = 7;
-    [SerializeField] private float _cellSize  = 1.0f;
+    [SerializeField] private int   _gridWidth  = 7;
+    [SerializeField] private int   _gridHeight = 7;
+    [SerializeField] private float _cellSize   = 1.0f;
 
     [Header("Специальные клетки")]
     [SerializeField] private Vector2Int _startPosition   = new Vector2Int(1, 2);
     [SerializeField] private Vector2Int _finishPosition  = new Vector2Int(4, 0);
-    [SerializeField] private Vector2Int _startPosition2  = new Vector2Int(5, 5);
+    [SerializeField] private Vector2Int _startPosition2  = new Vector2Int(99, 99);
     [SerializeField] private Vector2Int _finishPosition2 = new Vector2Int(0, 6);
 
     [Header("Спрайты специальных клеток")]
@@ -30,6 +30,7 @@ public class GridGenerator : MonoBehaviour
 
     [Header("Спрайты робота")]
     [SerializeField] private Sprite _robotSpriteDown;
+    [SerializeField] private Sprite _robotSpriteUp;
     [SerializeField] private Sprite _robotSpriteRight;
     [SerializeField] private Sprite _robotSpriteLeft;
 
@@ -86,7 +87,7 @@ public class GridGenerator : MonoBehaviour
     {
         if (_cellPrefab == null)
         {
-            Debug.LogError("Cell Prefab не назначен в GridGenerator!");
+            Debug.LogError("Cell Prefab не назначен!");
             return;
         }
 
@@ -166,7 +167,7 @@ public class GridGenerator : MonoBehaviour
         robot.transform.SetParent(transform);
 
         Robot1 = robot.AddComponent<RobotController>();
-        Robot1.Init(_cellSize, _gridWidth, _gridHeight, _robotSpriteDown, _robotSpriteRight, _robotSpriteLeft);
+        Robot1.Init(_cellSize, _gridWidth, _gridHeight, _robotSpriteDown, _robotSpriteUp, _robotSpriteRight, _robotSpriteLeft);
 
         _dynamicObjects.Add(robot);
         Debug.Log($"Робот создан в: {robotPosition}");
@@ -187,7 +188,6 @@ public class GridGenerator : MonoBehaviour
         robot.transform.SetParent(transform);
 
         _dynamicObjects.Add(robot);
-        Debug.Log($"Робот2 создан в: {robotPosition}");
     }
 
     void PlaceItem(GameObject prefab, Vector2Int gridPosition, string itemName, float zPosition)
