@@ -1,219 +1,229 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class GridGeneratorLevel5 : MonoBehaviour
 {
     [Header("Настройки поля")]
-    [SerializeField] private GameObject _cellPrefab; // Префаб одной клетки
-    [SerializeField] private int _gridWidth = 7;     // Ширина поля
-    [SerializeField] private int _gridHeight = 7;    // Высота поля
-    [SerializeField] private float _cellSize = 1.0f; // Размер клетки в юнитах
-    
+    [SerializeField] private GameObject _cellPrefab;
+    [SerializeField] private int   _gridWidth  = 7;
+    [SerializeField] private int   _gridHeight = 7;
+    [SerializeField] private float _cellSize   = 1.0f;
+
     [Header("Специальные клетки")]
-    [SerializeField] private Vector2Int _startPosition = new Vector2Int(1, 2);
-    [SerializeField] private Vector2Int _finishPosition = new Vector2Int(4, 0);
-    [SerializeField] private Vector2Int _startPosition2 = new Vector2Int(5, 5);
-    [SerializeField] private Vector2Int _finishPosition2 = new Vector2Int(0, 6);
-    
-    [Header("Спрайты специальных клеток")]
+    [SerializeField] private Vector2Int _startPosition1  = new Vector2Int(1, 2);
+    [SerializeField] private Vector2Int _startPosition2  = new Vector2Int(5, 2);
+    [SerializeField] private Vector2Int _finishPosition1 = new Vector2Int(4, 0);
+    [SerializeField] private Vector2Int _finishPosition2 = new Vector2Int(2, 6);
+
+    [Header("Спрайты клеток")]
     [SerializeField] private Sprite _startCellSprite;
-    [SerializeField] private Sprite _finishCellSprite;
-    [SerializeField] private Sprite _finishCellSprite2; // Добавлено: спрайт второго финиша
-    
-    [Header("Префабы предметов")]
+    [SerializeField] private Sprite _finishCellSprite1;
+    [SerializeField] private Sprite _finishCellSprite2;
+
+    [Header("Префабы")]
+    [SerializeField] private GameObject _cellPrefabObj;
     [SerializeField] private GameObject _obstaclePrefab;
-    [SerializeField] private GameObject _robotPrefab;
-    [SerializeField] private GameObject _robotPrefab2;
+    [SerializeField] private GameObject _robotPrefab1;   // синий робот
+    [SerializeField] private GameObject _robotPrefab2;   // жёлтый робот
     [SerializeField] private GameObject _coinPrefab;
-    
-    [Header("Позиции предметов")]
+    [SerializeField] private GameObject _computerPrefab;
+    [SerializeField] private GameObject _diskPrefab;
+
+    [Header("Спрайты синего робота (Robot1)")]
+    [SerializeField] private Sprite _robot1SpriteDown;
+    [SerializeField] private Sprite _robot1SpriteUp;
+    [SerializeField] private Sprite _robot1SpriteRight;
+    [SerializeField] private Sprite _robot1SpriteLeft;
+
+    [Header("Спрайты жёлтого робота (Robot2)")]
+    [SerializeField] private Sprite _robot2SpriteDown;
+    [SerializeField] private Sprite _robot2SpriteUp;
+    [SerializeField] private Sprite _robot2SpriteRight;
+    [SerializeField] private Sprite _robot2SpriteLeft;
+
+    [Header("Позиции препятствий")]
     [SerializeField] private Vector2Int[] _obstaclePositions = new Vector2Int[]
     {
-        new Vector2Int(0, 0),
+        new Vector2Int(2, 2),
         new Vector2Int(4, 4)
     };
-    
+
     [Header("Монеты")]
     [SerializeField] private Vector2Int[] _coinPositions = new Vector2Int[]
     {
         new Vector2Int(1, 1),
-        new Vector2Int(3, 3),
-        new Vector2Int(5, 2)
+        new Vector2Int(5, 5)
     };
 
-    void Start()
+    [Header("Компьютер и диск")]
+    [SerializeField] private Vector2Int _computerPosition = new Vector2Int(3, 4);
+    [SerializeField] private Vector2Int _diskPosition     = new Vector2Int(3, 1);
+
+    // Публичные роботы
+    public RobotController Robot1 { get; private set; }
+    public RobotController Robot2 { get; private set; }
+
+    private List<GameObject> _dynamicObjects = new List<GameObject>();
+
+    void Awake()
     {
         GenerateGrid();
-        PlaceItems();
+        SpawnDynamicObjects();
+    }
+
+    public void ResetLevel()
+    {
+        foreach (var obj in _dynamicObjects)
+            if (obj != null) Destroy(obj);
+
+        _dynamicObjects.Clear();
+        Robot1 = null;
+        Robot2 = null;
+
+        SpawnDynamicObjects();
+    }
+
+    void SpawnDynamicObjects()
+    {
+        PlaceObstacles();
         PlaceCoins();
-        PlaceRobot();
+        PlaceComputerAndDisk();
+        PlaceRobot1();
         PlaceRobot2();
     }
 
     void GenerateGrid()
     {
-        // Проверка на наличие префаба
         if (_cellPrefab == null)
         {
-            Debug.LogError("Cell Prefab не назначен в GridGenerator!");
+            Debug.LogError("Cell Prefab не назначен в GridGeneratorLevel5!");
             return;
         }
 
-        // Циклы для создания сетки
         for (int x = 0; x < _gridWidth; x++)
         {
             for (int y = 0; y < _gridHeight; y++)
             {
-                // Рассчитываем позицию для новой клетки
-                Vector3 cellPosition = new Vector3(x * _cellSize, y * _cellSize, 0);
-
-                // Создаем экземпляр префаба клетки
-                GameObject newCell = Instantiate(_cellPrefab, cellPosition, Quaternion.identity);
-
-                // Переименовываем для удобства в Hierarchy
-                newCell.name = $"Cell ({x}, {y})";
-
-                // Делаем созданную клетку дочерним объектом этого GameObject (GameBoard)
+                Vector3 cellPos    = new Vector3(x * _cellSize, y * _cellSize, 0);
+                GameObject newCell = Instantiate(_cellPrefab, cellPos, Quaternion.identity);
+                newCell.name       = $"Cell ({x}, {y})";
                 newCell.transform.SetParent(transform, false);
-                
-                // Настраиваем тип клетки (старт/финиш/обычная)
                 SetupCellType(newCell, x, y);
             }
         }
     }
-    
+
     void SetupCellType(GameObject cell, int x, int y)
     {
         SpriteRenderer sr = cell.GetComponent<SpriteRenderer>();
         if (sr == null) return;
-        
-        // Проверяем, является ли клетка стартовой или финишной
-        if (x == _startPosition.x && y == _startPosition.y && _startCellSprite != null)
+
+        if (x == _startPosition1.x && y == _startPosition1.y && _startCellSprite != null)
         {
-            sr.sprite = _startCellSprite;
+            sr.sprite  = _startCellSprite;
             cell.name += " (Start1)";
-        }
-        else if (x == _finishPosition.x && y == _finishPosition.y && _finishCellSprite != null)
-        {
-            sr.sprite = _finishCellSprite;
-            cell.name += " (Finish1)";
         }
         else if (x == _startPosition2.x && y == _startPosition2.y && _startCellSprite != null)
         {
-            sr.sprite = _startCellSprite;
+            sr.sprite  = _startCellSprite;
             cell.name += " (Start2)";
         }
-        else if (x == _finishPosition2.x && y == _finishPosition2.y && _finishCellSprite2 != null) // Используем отдельный спрайт
+        else if (x == _finishPosition1.x && y == _finishPosition1.y && _finishCellSprite1 != null)
         {
-            sr.sprite = _finishCellSprite2;
+            sr.sprite  = _finishCellSprite1;
+            cell.name += " (Finish1)";
+            cell.tag   = "Finish";
+        }
+        else if (x == _finishPosition2.x && y == _finishPosition2.y && _finishCellSprite2 != null)
+        {
+            sr.sprite  = _finishCellSprite2;
             cell.name += " (Finish2)";
         }
-        // Если это препятствие - меняем спрайт клетки на спрайт препятствия
-        else if (IsObstaclePosition(new Vector2Int(x, y)))
-        {
-            // Для препятствия можно оставить обычный спрайт или поменять
-            // Если хотите менять спрайт клетки для препятствия:
-            // sr.sprite = _obstacleSprite; // если добавите такое поле
-        }
     }
-    
-    void PlaceItems()
+
+    void PlaceObstacles()
     {
-        // Размещаем препятствия
         foreach (var pos in _obstaclePositions)
-        {
             if (_obstaclePrefab != null)
-            {
                 PlaceItem(_obstaclePrefab, pos, "Obstacle", -0.2f);
-            }
-        }
     }
-    
+
     void PlaceCoins()
     {
-        // Размещаем монеты
         foreach (var pos in _coinPositions)
-        {
             if (_coinPrefab != null)
-            {
                 PlaceItem(_coinPrefab, pos, "Coin", -0.3f);
-            }
-        }
     }
-    
-    void PlaceRobot()
+
+    void PlaceComputerAndDisk()
     {
-        if (_robotPrefab != null)
-        {
-            Vector3 robotPosition = new Vector3(
-                _startPosition.x * _cellSize,
-                _startPosition.y * _cellSize - 1.0f,
-                -1f
-            );
-            
-            GameObject robot = Instantiate(_robotPrefab, robotPosition, Quaternion.identity);
-            robot.name = "Robot1";
-            robot.transform.SetParent(transform);
-            
-            // Для отладки - выводим позиции
-            Debug.Log($"Первый робот: стартовая клетка ({_startPosition.x}, {_startPosition.y})");
-            Debug.Log($"Робот1 создан в: {robotPosition}");
-        }
+        if (_computerPrefab != null) PlaceItem(_computerPrefab, _computerPosition, "Computer", -0.25f);
+        if (_diskPrefab     != null) PlaceItem(_diskPrefab,     _diskPosition,     "Disk",     -0.25f);
     }
-    
+
+    void PlaceRobot1()
+    {
+        if (_robotPrefab1 == null) return;
+
+        Vector3 pos = new Vector3(
+            transform.position.x + _startPosition1.x * _cellSize,
+            transform.position.y + _startPosition1.y * _cellSize,
+            -0.5f
+        );
+
+        GameObject robot = Instantiate(_robotPrefab1, pos, Quaternion.identity);
+        robot.name = "Robot1_Blue";
+        robot.transform.SetParent(transform);
+
+        Robot1 = robot.AddComponent<RobotController>();
+        Robot1.Init(_cellSize, _gridWidth, _gridHeight,
+                    _robot1SpriteDown, _robot1SpriteUp,
+                    _robot1SpriteRight, _robot1SpriteLeft);
+
+        _dynamicObjects.Add(robot);
+        Debug.Log($"Синий робот создан в: {pos}");
+    }
+
     void PlaceRobot2()
     {
-        if (_robotPrefab2 != null)
-        {
-            Vector3 robotPosition = new Vector3(
-                _startPosition2.x * _cellSize,
-                _startPosition2.y * _cellSize - 1.0f,
-                -1.1f
-            );
-            
-            GameObject robot = Instantiate(_robotPrefab2, robotPosition, Quaternion.identity);
-            robot.name = "Robot2";
-            robot.transform.SetParent(transform);
-            
-            // Для отладки - выводим позиции
-            Debug.Log($"Второй робот: стартовая клетка ({_startPosition2.x}, {_startPosition2.y})");
-            Debug.Log($"Робот2 создан в: {robotPosition}");
-        }
-    }
-    
-    void PlaceItem(GameObject prefab, Vector2Int gridPosition, string itemName, float zPosition)
-    {
-        Vector3 worldPosition = new Vector3(
-            gridPosition.x * _cellSize,
-            gridPosition.y * _cellSize - 1.0f,
-            zPosition  // Предметы поверх клеток
+        if (_robotPrefab2 == null) return;
+
+        Vector3 pos = new Vector3(
+            transform.position.x + _startPosition2.x * _cellSize,
+            transform.position.y + _startPosition2.y * _cellSize,
+            -0.5f
         );
-        
-        GameObject item = Instantiate(prefab, worldPosition, Quaternion.identity);
-        item.name = itemName;
-        // Можно сделать предмет дочерним объектом GameBoard
-        item.transform.SetParent(transform);
+
+        GameObject robot = Instantiate(_robotPrefab2, pos, Quaternion.identity);
+        robot.name = "Robot2_Yellow";
+        robot.transform.SetParent(transform);
+
+        Robot2 = robot.AddComponent<RobotController>();
+        Robot2.Init(_cellSize, _gridWidth, _gridHeight,
+                    _robot2SpriteDown, _robot2SpriteUp,
+                    _robot2SpriteRight, _robot2SpriteLeft);
+
+        _dynamicObjects.Add(robot);
+        Debug.Log($"Жёлтый робот создан в: {pos}");
     }
-    
-    bool IsObstaclePosition(Vector2Int position)
+
+    void PlaceItem(GameObject prefab, Vector2Int gridPos, string itemName, float z)
     {
-        foreach (var obstaclePos in _obstaclePositions)
-        {
-            if (obstaclePos.x == position.x && obstaclePos.y == position.y)
-                return true;
-        }
-        return false;
+        Vector3 worldPos = new Vector3(
+            transform.position.x + gridPos.x * _cellSize,
+            transform.position.y + gridPos.y * _cellSize,
+            z
+        );
+
+        GameObject item = Instantiate(prefab, worldPos, Quaternion.identity);
+        item.name = itemName;
+        item.transform.SetParent(transform);
+        _dynamicObjects.Add(item);
     }
 
-    // Свойство для доступа к размеру клетки из других скриптов
-    public float CellSize => _cellSize;
-
-    // Свойства для доступа к параметрам сетки из других скриптов
-    public int GridWidth => _gridWidth;
-    public int GridHeight => _gridHeight;
-    
-    // Публичные геттеры для специальных позиций
-    public Vector2Int StartPosition => _startPosition;
-    public Vector2Int FinishPosition => _finishPosition;
+    public float      CellSize       => _cellSize;
+    public int        GridWidth      => _gridWidth;
+    public int        GridHeight     => _gridHeight;
+    public Vector2Int StartPosition1 => _startPosition1;
     public Vector2Int StartPosition2 => _startPosition2;
-    public Vector2Int FinishPosition2 => _finishPosition2;
 }
