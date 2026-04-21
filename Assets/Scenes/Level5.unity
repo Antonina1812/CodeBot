@@ -1065,8 +1065,7 @@ MonoBehaviour:
   _collectSprite: {fileID: 4901053292926111511, guid: 110756917d27d46348c74664401d8ea8, type: 3}
   _forOpenSprite: {fileID: 1017879102727171100, guid: bd53ecd3cd91c419cba50c22cee95cfc, type: 3}
   _forCloseSprite: {fileID: 3312798837105470071, guid: 118026cf5cc314263895c1e35134b377, type: 3}
-  _ifRobotBlueSprite: {fileID: 0}
-  _ifRobotYellowSprite: {fileID: 0}
+  _ifRobotSprite: {fileID: 3002052857585923105, guid: 17487b4e4542a4a0fad2329c8f83ab38, type: 3}
   _codeLinesContainer: {fileID: 1358086940}
   _lineSpacing: 35
   _firstLinePosition: {x: 0, y: 0}
@@ -1077,13 +1076,14 @@ MonoBehaviour:
   _forVariableColor: {r: 1, g: 0.6, b: 0.2, a: 1}
   _forNumberColor: {r: 0.5, g: 1, b: 0.5, a: 1}
   _forLineFontSize: 14
+  _blueRobotColor: {r: 0.2, g: 0.5, b: 1, a: 1}
+  _yellowRobotColor: {r: 1, g: 0, b: 0, a: 1}
   _moveForwardButton: {fileID: 364361062}
   _turnLeftButton: {fileID: 842117824}
   _turnRightButton: {fileID: 2033721941}
   _collectButton: {fileID: 334898362}
   _forOpenButton: {fileID: 555798574}
-  _ifRobotBlueButton: {fileID: 0}
-  _ifRobotYellowButton: {fileID: 0}
+  _ifRobotButton: {fileID: 829789130}
   _deleteLastLineButton: {fileID: 265553569}
   _forCountInput: {fileID: 1570466919}
 --- !u!1 &526308941
@@ -1627,6 +1627,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 689006115}
   m_CullTransparentMesh: 1
+--- !u!1 &786747899
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 786747901}
+  - component: {fileID: 786747900}
+  m_Layer: 0
+  m_Name: CodeExecutor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &786747900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 786747899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fd9548a233d2ba44954c280bf1d4eef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CodeExecutorLevel5
+  _codeEditor: {fileID: 456838916}
+  _runButton: {fileID: 810541467}
+--- !u!4 &786747901
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 786747899}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &810541465
 GameObject:
   m_ObjectHideFlags: 0
@@ -3206,3 +3252,4 @@ SceneRoots:
   - {fileID: 1574973797}
   - {fileID: 1806754246}
   - {fileID: 526308945}
+  - {fileID: 786747901}
