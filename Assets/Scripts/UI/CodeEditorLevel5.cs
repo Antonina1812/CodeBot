@@ -50,7 +50,7 @@ public class CodeEditorLevel5 : MonoBehaviour
     {
         public GameObject obj;
         public int        depth;
-        public bool       isBlock;   // true для for и if_robot
+        public bool       isBlock;  
         public bool       isClosed;
         public Image      arrowImage;
         public Button     arrowButton;
@@ -60,7 +60,7 @@ public class CodeEditorLevel5 : MonoBehaviour
     private List<string>       _commands = new List<string>();
 
     private int        _currentDepth = 0;
-    private Stack<int> _blockStack   = new Stack<int>(); // общий стек для for и if_robot
+    private Stack<int> _blockStack   = new Stack<int>(); 
 
     void Start()
     {
@@ -74,8 +74,6 @@ public class CodeEditorLevel5 : MonoBehaviour
 
         CreateColorPickerPanel();
     }
-
-    // ── Панель выбора цвета ────────────────────────────
 
     void CreateColorPickerPanel()
     {
@@ -131,7 +129,6 @@ public class CodeEditorLevel5 : MonoBehaviour
         _colorPickerPanel.SetActive(!_colorPickerPanel.activeSelf);
     }
 
-    // ── IF ROBOT блок ──────────────────────────────────
 
     void AddIfRobotLine(string robotColor)
     {
@@ -145,12 +142,10 @@ public class CodeEditorLevel5 : MonoBehaviour
         rt.sizeDelta  = _lineSize;
         rt.localScale = new Vector3(_lineScale, _lineScale, 1f);
 
-        // Спрайт if robot
         var img = line.AddComponent<Image>();
         img.sprite         = _ifRobotSprite;
         img.preserveAspect = true;
 
-        // Цветной квадрат справа
         GameObject colorSquare = new GameObject("ColorSquare");
         colorSquare.transform.SetParent(line.transform, false);
 
@@ -164,7 +159,6 @@ public class CodeEditorLevel5 : MonoBehaviour
         var sqImg = colorSquare.AddComponent<Image>();
         sqImg.color = robotColor == "blue" ? _blueRobotColor : _yellowRobotColor;
 
-        // Стрелка (открыт/закрыт) — как у for
         GameObject arrowObj = new GameObject("Arrow");
         arrowObj.transform.SetParent(line.transform, false);
 
@@ -199,7 +193,6 @@ public class CodeEditorLevel5 : MonoBehaviour
         RefreshLayout();
     }
 
-    // ── FOR блок ───────────────────────────────────────
 
     void AddForLine()
     {
@@ -277,7 +270,6 @@ public class CodeEditorLevel5 : MonoBehaviour
             _currentDepth = Mathf.Max(0, _currentDepth - 1);
     }
 
-    // ── ОБЫЧНЫЕ КОМАНДЫ ────────────────────────────────
 
     void AddCodeLine(Sprite sprite, string command)
     {
@@ -305,7 +297,6 @@ public class CodeEditorLevel5 : MonoBehaviour
         RefreshLayout();
     }
 
-    // ── УДАЛЕНИЕ ───────────────────────────────────────
 
     void DeleteLastLine()
     {

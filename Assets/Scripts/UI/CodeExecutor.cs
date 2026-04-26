@@ -11,10 +11,10 @@ public class CodeExecutor : MonoBehaviour
     [Header("Кнопки")]
     [SerializeField] private Button _runButton;
 
-    private GridGenerator   _grid;
+    private GridGenerator _grid;
     private RobotController _robot;
 
-    private bool      _isRunning = false;
+    private bool _isRunning = false;
     private Coroutine _executionCoroutine;
 
     void Start()
@@ -28,7 +28,7 @@ public class CodeExecutor : MonoBehaviour
         }
         else
         {
-            Debug.LogError("GridGenerator НЕ найден!");
+            Debug.LogError("GridGenerator НЕ найден");
         }
 
         _runButton?.onClick.AddListener(RunCode);
@@ -39,14 +39,9 @@ public class CodeExecutor : MonoBehaviour
         if (_isRunning) return;
 
         List<string> commands = _codeEditor.GetCommands();
-
         ResetLevel();
 
-        if (commands.Count == 0)
-        {
-            Debug.Log("Нет команд");
-            return;
-        }
+        if (commands.Count == 0) { Debug.Log("Нет команд"); return; }
 
         _executionCoroutine = StartCoroutine(Execute(commands));
     }
@@ -65,7 +60,6 @@ public class CodeExecutor : MonoBehaviour
             StopCoroutine(_executionCoroutine);
             _executionCoroutine = null;
         }
-
         _isRunning = false;
 
         if (_grid != null)
@@ -80,7 +74,7 @@ public class CodeExecutor : MonoBehaviour
         _isRunning = true;
         yield return StartCoroutine(RunBlock(commands, 0));
         _isRunning = false;
-        Debug.Log("Готово");
+        CheckWinCondition();
     }
 
     private IEnumerator RunBlock(List<string> commands, int startIndex)
@@ -93,14 +87,10 @@ public class CodeExecutor : MonoBehaviour
 
             if (cmd.StartsWith("for:"))
             {
-                int count    = int.Parse(cmd.Substring(4));
+                int count = int.Parse(cmd.Substring(4));
                 int endIndex = FindEndFor(commands, i);
 
-                if (endIndex == -1)
-                {
-                    Debug.LogError("Не найден end_for!");
-                    yield break;
-                }
+                if (endIndex == -1) { Debug.LogError("Не найден end_for!"); yield break; }
 
                 for (int k = 0; k < count; k++)
                     yield return StartCoroutine(RunBlock(commands, i + 1));
@@ -109,8 +99,7 @@ public class CodeExecutor : MonoBehaviour
                 continue;
             }
 
-            if (cmd == "end_for")
-                yield break;
+            if (cmd == "end_for") yield break;
 
             yield return StartCoroutine(ExecuteSingleCommand(cmd));
             i++;
@@ -120,7 +109,6 @@ public class CodeExecutor : MonoBehaviour
     private int FindEndFor(List<string> commands, int startIndex)
     {
         int depth = 0;
-
         for (int i = startIndex + 1; i < commands.Count; i++)
         {
             if (commands[i].StartsWith("for:")) depth++;
@@ -130,7 +118,6 @@ public class CodeExecutor : MonoBehaviour
                 depth--;
             }
         }
-
         return -1;
     }
 
@@ -138,24 +125,28 @@ public class CodeExecutor : MonoBehaviour
     {
         switch (cmd)
         {
-            case "move_forward":
-                yield return StartCoroutine(_robot.MoveForward());
-                break;
-            case "turn_left":
-                yield return StartCoroutine(_robot.TurnLeft());
-                break;
-            case "turn_right":
-                yield return StartCoroutine(_robot.TurnRight());
-                break;
-            case "collect":
-                yield return StartCoroutine(_robot.Collect());
-                break;
-            case "insert":
-                yield return StartCoroutine(_robot.Insert());
-                break;
-            default:
-                Debug.LogWarning($"Неизвестная команда: {cmd}");
-                break;
+            case "move_forward": yield return StartCoroutine(_robot.MoveForward()); break;
+            case "turn_left": yield return StartCoroutine(_robot.TurnLeft()); break;
+            case "turn_right": yield return StartCoroutine(_robot.TurnRight()); break;
+            case "collect": yield return StartCoroutine(_robot.Collect()); break;
+            case "insert": yield return StartCoroutine(_robot.Insert()); break;
+            default: Debug.LogWarning($"Неизвестная команда: {cmd}"); break;
         }
+    }
+
+    private void CheckWinCondition()
+    {
+        if (_grid == null || _robot == null) return;
+
+        Vector2Int finish = _grid.FinishPosition;
+        Vector2 finishWorld = new Vector2(
+            _grid.transform.position.x + finish.x * _grid.CellSize,
+            _grid.transform.position.y + finish.y * _grid.CellSize
+        );
+
+        bool win = Vector2.Distance(_robot.transform.position, finishWorld) < _grid.CellSize * 0.5f;
+
+        if (win) LevelUI.Instance?.ShowWin();
+        else LevelUI.Instance?.ShowLose();
     }
 }

@@ -5,13 +5,13 @@ public class GridGeneratorLevel5 : MonoBehaviour
 {
     [Header("Настройки поля")]
     [SerializeField] private GameObject _cellPrefab;
-    [SerializeField] private int   _gridWidth  = 7;
-    [SerializeField] private int   _gridHeight = 7;
-    [SerializeField] private float _cellSize   = 1.0f;
+    [SerializeField] private int _gridWidth = 7;
+    [SerializeField] private int _gridHeight = 7;
+    [SerializeField] private float _cellSize = 1.0f;
 
     [Header("Специальные клетки")]
-    [SerializeField] private Vector2Int _startPosition1  = new Vector2Int(1, 2);
-    [SerializeField] private Vector2Int _startPosition2  = new Vector2Int(5, 2);
+    [SerializeField] private Vector2Int _startPosition1 = new Vector2Int(1, 2);
+    [SerializeField] private Vector2Int _startPosition2 = new Vector2Int(5, 2);
     [SerializeField] private Vector2Int _finishPosition1 = new Vector2Int(4, 0);
     [SerializeField] private Vector2Int _finishPosition2 = new Vector2Int(2, 6);
 
@@ -23,8 +23,8 @@ public class GridGeneratorLevel5 : MonoBehaviour
     [Header("Префабы")]
     [SerializeField] private GameObject _cellPrefabObj;
     [SerializeField] private GameObject _obstaclePrefab;
-    [SerializeField] private GameObject _robotPrefab1;   // синий робот
-    [SerializeField] private GameObject _robotPrefab2;   // жёлтый робот
+    [SerializeField] private GameObject _robotPrefab1;
+    [SerializeField] private GameObject _robotPrefab2;
     [SerializeField] private GameObject _coinPrefab;
     [SerializeField] private GameObject _computerPrefab;
     [SerializeField] private GameObject _diskPrefab;
@@ -42,14 +42,16 @@ public class GridGeneratorLevel5 : MonoBehaviour
     [SerializeField] private Sprite _robot2SpriteLeft;
 
     [Header("Позиции препятствий")]
-    [SerializeField] private Vector2Int[] _obstaclePositions = new Vector2Int[]
+    [SerializeField]
+    private Vector2Int[] _obstaclePositions = new Vector2Int[]
     {
         new Vector2Int(2, 2),
         new Vector2Int(4, 4)
     };
 
     [Header("Монеты")]
-    [SerializeField] private Vector2Int[] _coinPositions = new Vector2Int[]
+    [SerializeField]
+    private Vector2Int[] _coinPositions = new Vector2Int[]
     {
         new Vector2Int(1, 1),
         new Vector2Int(5, 5)
@@ -57,9 +59,8 @@ public class GridGeneratorLevel5 : MonoBehaviour
 
     [Header("Компьютер и диск")]
     [SerializeField] private Vector2Int _computerPosition = new Vector2Int(3, 4);
-    [SerializeField] private Vector2Int _diskPosition     = new Vector2Int(3, 1);
+    [SerializeField] private Vector2Int _diskPosition = new Vector2Int(3, 1);
 
-    // Публичные роботы
     public RobotController Robot1 { get; private set; }
     public RobotController Robot2 { get; private set; }
 
@@ -104,9 +105,9 @@ public class GridGeneratorLevel5 : MonoBehaviour
         {
             for (int y = 0; y < _gridHeight; y++)
             {
-                Vector3 cellPos    = new Vector3(x * _cellSize, y * _cellSize, 0);
+                Vector3 cellPos = new Vector3(x * _cellSize, y * _cellSize, 0);
                 GameObject newCell = Instantiate(_cellPrefab, cellPos, Quaternion.identity);
-                newCell.name       = $"Cell ({x}, {y})";
+                newCell.name = $"Cell ({x}, {y})";
                 newCell.transform.SetParent(transform, false);
                 SetupCellType(newCell, x, y);
             }
@@ -120,23 +121,23 @@ public class GridGeneratorLevel5 : MonoBehaviour
 
         if (x == _startPosition1.x && y == _startPosition1.y && _startCellSprite != null)
         {
-            sr.sprite  = _startCellSprite;
+            sr.sprite = _startCellSprite;
             cell.name += " (Start1)";
         }
         else if (x == _startPosition2.x && y == _startPosition2.y && _startCellSprite != null)
         {
-            sr.sprite  = _startCellSprite;
+            sr.sprite = _startCellSprite;
             cell.name += " (Start2)";
         }
         else if (x == _finishPosition1.x && y == _finishPosition1.y && _finishCellSprite1 != null)
         {
-            sr.sprite  = _finishCellSprite1;
+            sr.sprite = _finishCellSprite1;
             cell.name += " (Finish1)";
-            cell.tag   = "Finish";
+            cell.tag = "Finish";
         }
         else if (x == _finishPosition2.x && y == _finishPosition2.y && _finishCellSprite2 != null)
         {
-            sr.sprite  = _finishCellSprite2;
+            sr.sprite = _finishCellSprite2;
             cell.name += " (Finish2)";
         }
     }
@@ -158,7 +159,7 @@ public class GridGeneratorLevel5 : MonoBehaviour
     void PlaceComputerAndDisk()
     {
         if (_computerPrefab != null) PlaceItem(_computerPrefab, _computerPosition, "Computer", -0.25f);
-        if (_diskPrefab     != null) PlaceItem(_diskPrefab,     _diskPosition,     "Disk",     -0.25f);
+        if (_diskPrefab != null) PlaceItem(_diskPrefab, _diskPosition, "Disk", -0.25f);
     }
 
     void PlaceRobot1()
@@ -221,9 +222,12 @@ public class GridGeneratorLevel5 : MonoBehaviour
         _dynamicObjects.Add(item);
     }
 
-    public float      CellSize       => _cellSize;
-    public int        GridWidth      => _gridWidth;
-    public int        GridHeight     => _gridHeight;
+    // ── Геттеры ─────────────────────────────────────────
+    public float CellSize => _cellSize;
+    public int GridWidth => _gridWidth;
+    public int GridHeight => _gridHeight;
     public Vector2Int StartPosition1 => _startPosition1;
     public Vector2Int StartPosition2 => _startPosition2;
+    public Vector2Int FinishPosition1 => _finishPosition1;
+    public Vector2Int FinishPosition2 => _finishPosition2;
 }

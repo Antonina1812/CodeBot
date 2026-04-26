@@ -139,7 +139,6 @@ public class CodeEditor : MonoBehaviour
             arrowButton = arrowBtn
         };
 
-        // Стрелка — только закрытие, одностороннее
         arrowBtn.onClick.AddListener(() => CloseFor(data));
 
         _lines.Add(data);
@@ -151,28 +150,22 @@ public class CodeEditor : MonoBehaviour
         RefreshLayout();
     }
 
-    // Закрыть цикл — только один раз, стрелка становится неактивной
     void CloseFor(CodeLineData forData)
     {
-        if (forData.isClosed) return; // уже закрыт
+        if (forData.isClosed) return;
 
         forData.isClosed = true;
         forData.arrowImage.sprite = _forCloseSprite;
-
-        // Отключаем кнопку — цикл нельзя переоткрыть
         forData.arrowButton.interactable = false;
 
-        // Добавляем end_for в команды
         _commands.Add("end_for");
 
-        // Уменьшаем глубину для новых команд
         if (_forStack.Count > 0)
             _currentDepth = _forStack.Pop();
         else
             _currentDepth = Mathf.Max(0, _currentDepth - 1);
     }
 
-    // ── ОБЫЧНЫЕ КОМАНДЫ ────────────────────────────────
 
     void AddCodeLine(Sprite sprite, string command)
     {
@@ -207,11 +200,8 @@ public class CodeEditor : MonoBehaviour
         int last        = _lines.Count - 1;
         CodeLineData ld = _lines[last];
 
-        // Удаляем последнюю команду из _commands
-        // Если это был for — нужно убрать его end_for тоже (если закрыт)
         if (ld.isFor)
         {
-            // Убираем end_for если цикл был закрыт
             if (ld.isClosed)
             {
                 for (int i = _commands.Count - 1; i >= 0; i--)
@@ -223,7 +213,6 @@ public class CodeEditor : MonoBehaviour
                     }
                 }
             }
-            // Убираем саму команду for:N
             for (int i = _commands.Count - 1; i >= 0; i--)
             {
                 if (_commands[i].StartsWith("for:"))
@@ -235,7 +224,6 @@ public class CodeEditor : MonoBehaviour
         }
         else
         {
-            // Обычная команда — удаляем последнюю не-end_for
             for (int i = _commands.Count - 1; i >= 0; i--)
             {
                 if (!_commands[i].Equals("end_for"))
