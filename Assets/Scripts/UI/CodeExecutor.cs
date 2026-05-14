@@ -43,6 +43,9 @@ public class CodeExecutor : MonoBehaviour
 
         if (commands.Count == 0) { Debug.Log("Нет команд"); return; }
 
+        // Сбрасываем счетчик команд
+        LevelUI.Instance?.ResetCommandCounter();
+
         _executionCoroutine = StartCoroutine(Execute(commands));
     }
 
@@ -74,6 +77,8 @@ public class CodeExecutor : MonoBehaviour
         _isRunning = true;
         yield return StartCoroutine(RunBlock(commands, 0));
         _isRunning = false;
+        
+        Debug.Log($"Выполнено команд: {commands.Count}");
         CheckWinCondition();
     }
 
@@ -101,6 +106,9 @@ public class CodeExecutor : MonoBehaviour
 
             if (cmd == "end_for") yield break;
 
+            // Считаем только реальные команды (не for/end_for)
+            LevelUI.Instance?.AddExecutedCommand();
+            
             yield return StartCoroutine(ExecuteSingleCommand(cmd));
             i++;
         }

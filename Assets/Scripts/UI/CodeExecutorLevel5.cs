@@ -42,6 +42,10 @@ public class CodeExecutorLevel5 : MonoBehaviour
         List<string> commands = _codeEditor.GetCommands();
         ResetLevel();
         if (commands.Count == 0) { Debug.Log("Нет команд"); return; }
+
+        // Сбрасываем счетчик команд
+        LevelUI.Instance?.ResetCommandCounter();
+
         _executionCoroutine = StartCoroutine(Execute(commands));
     }
 
@@ -98,6 +102,9 @@ public class CodeExecutorLevel5 : MonoBehaviour
 
             if (cmd == "end_if") yield break;
 
+            // Считаем только реальные команды
+            LevelUI.Instance?.AddExecutedCommand();
+
             yield return StartCoroutine(ExecuteCommand(cmd, activeRobot));
             i++;
         }
@@ -113,8 +120,10 @@ public class CodeExecutorLevel5 : MonoBehaviour
             if (_robot2 != null) StartCoroutine(RunSingle(_robot2, cmd, () => r2done = true));
             yield return new WaitUntil(() => r1done && r2done);
         }
-        else if (activeRobot == "blue" && _robot1 != null) yield return StartCoroutine(ExecuteSingleCommand(_robot1, cmd));
-        else if (activeRobot == "yellow" && _robot2 != null) yield return StartCoroutine(ExecuteSingleCommand(_robot2, cmd));
+        else if (activeRobot == "blue" && _robot1 != null) 
+            yield return StartCoroutine(ExecuteSingleCommand(_robot1, cmd));
+        else if (activeRobot == "yellow" && _robot2 != null) 
+            yield return StartCoroutine(ExecuteSingleCommand(_robot2, cmd));
     }
 
     private IEnumerator RunSingle(RobotController robot, string cmd, System.Action onDone)
