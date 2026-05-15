@@ -2115,7 +2115,7 @@ MonoBehaviour:
   _idealCommandsText: {fileID: 507834311}
   _efficiencyText: {fileID: 2018779662}
   _efficiencyFillImage: {fileID: 1359865519}
-  _idealCommandsCount: 5
+  _idealCommandsCount: 10
 --- !u!114 &1672315457 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 609676121437183036, guid: 165db965ac525194abeb60dc6dcdaac0, type: 3}
