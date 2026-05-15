@@ -171,9 +171,9 @@ public class LevelUI : MonoBehaviour
             _efficiencyText.text = $"Эффективность: {efficiency:F1}%";
             
             // Цвет в зависимости от эффективности
-            if (efficiency >= 90f)
+            if (efficiency >= 75f)
                 _efficiencyText.color = Color.green;
-            else if (efficiency >= 70f)
+            else if (efficiency >= 50f)
                 _efficiencyText.color = Color.yellow;
             else
                 _efficiencyText.color = Color.red;
