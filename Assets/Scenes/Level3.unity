@@ -2958,7 +2958,7 @@ MonoBehaviour:
   _quitButton: {fileID: 274822883}
   _settingsPanel: {fileID: 1990809136}
   _attemptsText: {fileID: 638633755}
-  _attemptsForThisLevel: 5
+  _attemptsForThisLevel: 8
   _statsPanel: {fileID: 873893300}
   _commandsUsedText: {fileID: 1486774379}
   _idealCommandsText: {fileID: 43355914}
