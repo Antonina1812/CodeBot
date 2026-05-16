@@ -117,7 +117,6 @@ public class GameProgress : MonoBehaviour
     {
         Debug.Log("Сброс прогресса до 1 уровня!");
         _runtimeData.lastUnlockedLevel = 1;
-        //_runtimeData.attemptsLeft = _defaultAttempts;
         Save();
     }
 }   

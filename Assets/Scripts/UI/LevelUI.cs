@@ -28,15 +28,15 @@ public class LevelUI : MonoBehaviour
     [SerializeField] private int _attemptsForThisLevel = 3;
 
     [Header("Статистика")]
-    [SerializeField] private GameObject _statsPanel;              // Панель со статистикой
-    [SerializeField] private TextMeshProUGUI _commandsUsedText;   // "Команд использовано: X"
-    [SerializeField] private TextMeshProUGUI _idealCommandsText;  // "Идеальное количество: Y"
-    [SerializeField] private TextMeshProUGUI _efficiencyText;     // "Эффективность: 85%"
-    [SerializeField] private Image _efficiencyFillImage;          // Заполняемая полоска эффективности
-    [SerializeField] private int _idealCommandsCount = 5;         // Идеальное количество команд для уровня
+    [SerializeField] private GameObject _statsPanel;              
+    [SerializeField] private TextMeshProUGUI _commandsUsedText;   
+    [SerializeField] private TextMeshProUGUI _idealCommandsText;
+    [SerializeField] private TextMeshProUGUI _efficiencyText;     
+    [SerializeField] private Image _efficiencyFillImage;          
+    [SerializeField] private int _idealCommandsCount = 5;         
 
     private float _levelStartTime;
-    private int _commandsExecuted = 0;  // Счетчик выполненных команд
+    private int _commandsExecuted = 0; 
 
     void Awake()
     {
@@ -116,13 +116,11 @@ public class LevelUI : MonoBehaviour
         }
     }
 
-    // Метод для подсчета команд (вызывается из CodeExecutor)
     public void AddExecutedCommand()
     {
         _commandsExecuted++;
     }
 
-    // Метод для сброса счетчика команд (вызывается перед выполнением)
     public void ResetCommandCounter()
     {
         _commandsExecuted = 0;
@@ -139,7 +137,6 @@ public class LevelUI : MonoBehaviour
         _titleText.text = "Уровень пройден!";
         _timeText.text = GetTimeString();
         
-        // Показываем статистику
         ShowStatistics();
         
         _nextLevelButton?.gameObject.SetActive(true);
@@ -193,7 +190,6 @@ public class LevelUI : MonoBehaviour
                 _efficiencyFillImage.color = Color.red;
         }
         
-        // Сохраняем лучший результат для уровня
         SaveBestEfficiency(efficiency);
     }
 
@@ -202,11 +198,9 @@ public class LevelUI : MonoBehaviour
         if (_idealCommandsCount <= 0) return 100f;
         if (_commandsExecuted <= 0) return 0f;
         
-        // Если использовано меньше или равно идеальному - 100%
         if (_commandsExecuted <= _idealCommandsCount)
             return 100f;
         
-        // Иначе вычисляем процент
         float efficiency = ((float)_idealCommandsCount / _commandsExecuted) * 100f;
         return Mathf.Clamp(efficiency, 0f, 100f);
     }

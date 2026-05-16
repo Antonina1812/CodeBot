@@ -43,7 +43,6 @@ public class CodeExecutor : MonoBehaviour
 
         if (commands.Count == 0) { Debug.Log("Нет команд"); return; }
 
-        // Сбрасываем счетчик команд
         LevelUI.Instance?.ResetCommandCounter();
 
         _executionCoroutine = StartCoroutine(Execute(commands));
