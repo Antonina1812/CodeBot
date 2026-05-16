@@ -2023,7 +2023,7 @@ MonoBehaviour:
   _idealCommandsText: {fileID: 1344325018}
   _efficiencyText: {fileID: 248338539}
   _efficiencyFillImage: {fileID: 2078219555}
-  _idealCommandsCount: 10
+  _idealCommandsCount: 34
 --- !u!1 &1684026767
 GameObject:
   m_ObjectHideFlags: 0
