@@ -1314,7 +1314,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -895.87994, y: 0}
+  m_AnchoredPosition: {x: -895.8799, y: 0}
   m_SizeDelta: {x: -1680.24, y: -100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1003743673
@@ -1747,7 +1747,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -66}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1595836677
@@ -1844,17 +1844,28 @@ MonoBehaviour:
   _moveForwardSprite: {fileID: -8203191263239802335, guid: cbfcdf178b8e5463b8d5926140b81dbc, type: 3}
   _turnLeftSprite: {fileID: 8616669327447837791, guid: 5015c8482996141e1ab0c7d686dd9813, type: 3}
   _turnRightSprite: {fileID: -6693428561845550806, guid: 5c1af0c32022c4ffb9304dfba85e8580, type: 3}
-  _collectSprite: {fileID: 3894676944383411794, guid: 1cbc77773e0454760b6ea2ca90bc0f47, type: 3}
+  _collectSprite: {fileID: 2909753341538801668, guid: 51c029f18403541f0aa349cd6c42ca83, type: 3}
+  _insertSprite: {fileID: 0}
+  _forOpenSprite: {fileID: 0}
+  _forCloseSprite: {fileID: 0}
   _codeLinesContainer: {fileID: 1209891944}
-  _lineSpacing: 35
-  _firstLinePosition: {x: 0, y: 0}
+  _lineSpacing: 45
+  _firstLinePosition: {x: 0, y: -7}
   _lineSize: {x: 140, y: 35}
   _lineScale: 1
+  _indentOffset: 20
+  _forKeywordColor: {r: 0.4, g: 0.7, b: 1, a: 1}
+  _forVariableColor: {r: 1, g: 0.6, b: 0.2, a: 1}
+  _forNumberColor: {r: 0.5, g: 1, b: 0.5, a: 1}
+  _forLineFontSize: 14
   _moveForwardButton: {fileID: 999867897}
   _turnLeftButton: {fileID: 519270551}
   _turnRightButton: {fileID: 1074592204}
   _collectButton: {fileID: 1802572546}
+  _insertButton: {fileID: 0}
+  _forOpenButton: {fileID: 0}
   _deleteLastLineButton: {fileID: 2138527992}
+  _forCountInput: {fileID: 0}
 --- !u!1 &1669908692
 GameObject:
   m_ObjectHideFlags: 0
@@ -2142,6 +2153,7 @@ MonoBehaviour:
   _computerPrefab: {fileID: 7466643488861386615, guid: f6cc0d934b1d846489f4d0b40e0cc5c0, type: 3}
   _diskPrefab: {fileID: 8877785023585052280, guid: 84300d52169e1421f9e1075e92785d63, type: 3}
   _robotSpriteDown: {fileID: 21300000, guid: 554ec528a63e64e578c030b623841db9, type: 3}
+  _robotSpriteUp: {fileID: 0}
   _robotSpriteRight: {fileID: 21300000, guid: ee63712a70dc04e959b8f8c8fc0315cd, type: 3}
   _robotSpriteLeft: {fileID: 21300000, guid: da004ad990b824ccf83490e96ea5116e, type: 3}
   _obstaclePositions:
