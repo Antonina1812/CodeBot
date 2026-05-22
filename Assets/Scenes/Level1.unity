@@ -1617,7 +1617,7 @@ MonoBehaviour:
   _resultMenuButton: {fileID: 85223247}
   _menuButton: {fileID: 1672315457}
   _settingsButton: {fileID: 1691758258}
-  _quitButton: {fileID: 1792022017}
+  _giveUpButton: {fileID: 1792022017}
   _settingsPanel: {fileID: 3242910834432750528}
 --- !u!114 &1672315457 stripped
 MonoBehaviour:

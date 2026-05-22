@@ -28,7 +28,6 @@ public class GameProgress : MonoBehaviour
 
         if (_defaultData == null)
         {
-
             enabled = false;
             return;
         }
@@ -39,10 +38,6 @@ public class GameProgress : MonoBehaviour
         _runtimeData.lastUnlockedLevel = _defaultData.lastUnlockedLevel;
 
         HasSave = SaveSystem.Load(_runtimeData);
-        if (!HasSave)
-        {
-
-        }
     }
 
     private void OnApplicationQuit()
@@ -70,6 +65,23 @@ public class GameProgress : MonoBehaviour
     {
         if (levelIndex <= _runtimeData.lastUnlockedLevel) return;
         _runtimeData.lastUnlockedLevel = levelIndex;
+        Save();
+    }
+
+    public void ResetProgress()
+    {
+        if (_runtimeData == null) return;
+
+        float savedMusic = _runtimeData.musicVolume;
+        float savedSfx = _runtimeData.sfxVolume;
+
+        _runtimeData.lastUnlockedLevel = 1;
+        HasSave = false;
+
+        _runtimeData.musicVolume = savedMusic;
+        _runtimeData.sfxVolume = savedSfx;
+
+        SaveSystem.DeleteSave();
         Save();
     }
 }

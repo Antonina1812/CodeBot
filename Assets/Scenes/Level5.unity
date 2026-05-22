@@ -2391,7 +2391,7 @@ MonoBehaviour:
   _resultMenuButton: {fileID: 2145473074}
   _menuButton: {fileID: 383477703}
   _settingsButton: {fileID: 382559406}
-  _quitButton: {fileID: 265003215}
+  _giveUpButton: {fileID: 265003215}
   _settingsPanel: {fileID: 1078009759}
 --- !u!1 &1613725441
 GameObject:

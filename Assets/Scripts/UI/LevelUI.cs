@@ -18,7 +18,7 @@ public class LevelUI : MonoBehaviour
     [Header("Боковые кнопки")]
     [SerializeField] private Button _menuButton;
     [SerializeField] private Button _settingsButton;
-    [SerializeField] private Button _quitButton;
+    [SerializeField] private Button _giveUpButton;
 
     [Header("Панель настроек")]
     [SerializeField] private GameObject _settingsPanel;
@@ -40,7 +40,7 @@ public class LevelUI : MonoBehaviour
         _nextLevelButton?.onClick.AddListener(LoadNextLevel);
         _menuButton?.onClick.AddListener(GoToMenu);
         _settingsButton?.onClick.AddListener(ToggleSettings);
-        _quitButton?.onClick.AddListener(QuitGame);
+        _giveUpButton?.onClick.AddListener(GiveUp);
     }
 
     public void ShowWin()
@@ -48,7 +48,6 @@ public class LevelUI : MonoBehaviour
         int currentLevel = GetCurrentLevelIndex();
         GameProgress.Instance?.UnlockLevel(currentLevel + 1);
         GameProgress.Instance?.Save();
-
         _titleText.text = "Уровень пройден!";
         _timeText.text = GetTimeString();
         _nextLevelButton?.gameObject.SetActive(true);
@@ -75,9 +74,10 @@ public class LevelUI : MonoBehaviour
         SceneManager.LoadScene("MainMenu");
     }
 
-    public void QuitGame()
+    public void GiveUp()
     {
-        Application.Quit();
+        GameProgress.Instance?.ResetProgress();
+        SceneManager.LoadScene("Level1");
     }
 
     private void LoadNextLevel()
