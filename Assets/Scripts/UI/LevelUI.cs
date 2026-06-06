@@ -18,7 +18,7 @@ public class LevelUI : MonoBehaviour
     [Header("Боковые кнопки")]
     [SerializeField] private Button _menuButton;
     [SerializeField] private Button _settingsButton;
-    [SerializeField] private Button _quitButton;
+    [SerializeField] private Button _giveUpButton;
 
     [Header("Панель настроек")]
     [SerializeField] private GameObject _settingsPanel;
@@ -28,33 +28,35 @@ public class LevelUI : MonoBehaviour
     [SerializeField] private int _attemptsForThisLevel = 3;
 
     [Header("Статистика")]
-    [SerializeField] private GameObject _statsPanel;              
-    [SerializeField] private TextMeshProUGUI _commandsUsedText;   
+    [SerializeField] private GameObject _statsPanel;
+    [SerializeField] private TextMeshProUGUI _commandsUsedText;
     [SerializeField] private TextMeshProUGUI _idealCommandsText;
-    [SerializeField] private TextMeshProUGUI _efficiencyText;     
-    [SerializeField] private Image _efficiencyFillImage;          
-    [SerializeField] private int _idealCommandsCount = 5;         
+    [SerializeField] private TextMeshProUGUI _efficiencyText;
+    [SerializeField] private Image _efficiencyFillImage;
+    [SerializeField] private int _idealCommandsCount = 5;
 
     private float _levelStartTime;
-    private int _commandsExecuted = 0; 
+    private int _commandsExecuted = 0;
 
-    void Awake()
+    private void Awake()
     {
         Instance = this;
+
         _resultPanel?.SetActive(false);
         _settingsPanel?.SetActive(false);
         _statsPanel?.SetActive(false);
+
         _levelStartTime = Time.time;
     }
 
-    void Start()
+    private void Start()
     {
         _retryButton?.onClick.AddListener(ReloadLevel);
         _resultMenuButton?.onClick.AddListener(GoToMenu);
         _nextLevelButton?.onClick.AddListener(LoadNextLevel);
         _menuButton?.onClick.AddListener(GoToMenu);
         _settingsButton?.onClick.AddListener(ToggleSettings);
-        _quitButton?.onClick.AddListener(QuitGame);
+        _giveUpButton?.onClick.AddListener(GiveUp);
 
         SetupAttemptsForLevel();
         UpdateAttemptsDisplay();
@@ -66,14 +68,14 @@ public class LevelUI : MonoBehaviour
 
         int currentLevelIndex = GetCurrentLevelIndex();
         string currentLevelName = SceneManager.GetActiveScene().name;
-        
+
         string lastLevelKey = "LastPlayedLevel";
         string lastAttemptsKey = "CurrentAttempts";
-        
+
         string lastLevel = PlayerPrefs.GetString(lastLevelKey, "");
-        bool isNewLevel = (lastLevel != currentLevelName);
+        bool isNewLevel = lastLevel != currentLevelName;
         bool hasAttemptsForThisLevel = PlayerPrefs.HasKey(lastAttemptsKey) && !isNewLevel;
-        
+
         if (isNewLevel)
         {
             GameProgress.Instance.SetAttemptsForLevel(currentLevelIndex, _attemptsForThisLevel);
@@ -92,28 +94,27 @@ public class LevelUI : MonoBehaviour
             PlayerPrefs.SetInt(lastAttemptsKey, _attemptsForThisLevel);
             Debug.Log($"Первый запуск уровня {currentLevelName}. Установлено {_attemptsForThisLevel} попыток");
         }
-        
+
         PlayerPrefs.SetString(lastLevelKey, currentLevelName);
         PlayerPrefs.Save();
     }
 
-    void UpdateAttemptsDisplay()
+    private void UpdateAttemptsDisplay()
     {
-        if (_attemptsText != null && GameProgress.Instance != null)
-        {
-            int attempts = GameProgress.Instance.AttemptsLeft;
-            _attemptsText.text = $"Попытки: {attempts}";
-            
-            PlayerPrefs.SetInt("CurrentAttempts", attempts);
-            PlayerPrefs.Save();
-            
-            if (attempts <= 1)
-                _attemptsText.color = Color.red;
-            else if (attempts <= 2)
-                _attemptsText.color = Color.yellow;
-            else
-                _attemptsText.color = Color.white;
-        }
+        if (_attemptsText == null || GameProgress.Instance == null) return;
+
+        int attempts = GameProgress.Instance.AttemptsLeft;
+        _attemptsText.text = $"Попытки: {attempts}";
+
+        PlayerPrefs.SetInt("CurrentAttempts", attempts);
+        PlayerPrefs.Save();
+
+        if (attempts <= 1)
+            _attemptsText.color = Color.red;
+        else if (attempts <= 2)
+            _attemptsText.color = Color.yellow;
+        else
+            _attemptsText.color = Color.white;
     }
 
     public void AddExecutedCommand()
@@ -129,45 +130,42 @@ public class LevelUI : MonoBehaviour
     public void ShowWin()
     {
         int currentLevel = GetCurrentLevelIndex();
+
         GameProgress.Instance?.UnlockLevel(currentLevel + 1);
         GameProgress.Instance?.Save();
 
         PlayerPrefs.DeleteKey("CurrentAttempts");
-        
+
         _titleText.text = "Уровень пройден!";
         _timeText.text = GetTimeString();
-        
+
         ShowStatistics();
-        
+
         _nextLevelButton?.gameObject.SetActive(true);
+        _retryButton?.gameObject.SetActive(false);
         _resultPanel?.SetActive(true);
-        
+
         Debug.Log($"Победа! Разблокирован уровень {currentLevel + 1}");
     }
 
     private void ShowStatistics()
     {
         if (_statsPanel == null) return;
-        
+
         _statsPanel.SetActive(true);
-        
-        // Отображаем количество использованных команд
+
         if (_commandsUsedText != null)
             _commandsUsedText.text = $"Команд использовано: {_commandsExecuted}";
-        
-        // Отображаем идеальное количество команд
+
         if (_idealCommandsText != null)
             _idealCommandsText.text = $"Идеальное количество: {_idealCommandsCount}";
-        
-        // Вычисляем эффективность
+
         float efficiency = CalculateEfficiency();
-        
-        // Отображаем процент эффективности
+
         if (_efficiencyText != null)
         {
             _efficiencyText.text = $"Эффективность: {efficiency:F1}%";
-            
-            // Цвет в зависимости от эффективности
+
             if (efficiency >= 75f)
                 _efficiencyText.color = Color.green;
             else if (efficiency >= 50f)
@@ -175,13 +173,11 @@ public class LevelUI : MonoBehaviour
             else
                 _efficiencyText.color = Color.red;
         }
-        
-        // Заполняем полоску эффективности
+
         if (_efficiencyFillImage != null)
         {
             _efficiencyFillImage.fillAmount = efficiency / 100f;
-            
-            // Цвет полоски
+
             if (efficiency >= 75f)
                 _efficiencyFillImage.color = Color.green;
             else if (efficiency >= 50f)
@@ -189,7 +185,7 @@ public class LevelUI : MonoBehaviour
             else
                 _efficiencyFillImage.color = Color.red;
         }
-        
+
         SaveBestEfficiency(efficiency);
     }
 
@@ -197,10 +193,10 @@ public class LevelUI : MonoBehaviour
     {
         if (_idealCommandsCount <= 0) return 100f;
         if (_commandsExecuted <= 0) return 0f;
-        
+
         if (_commandsExecuted <= _idealCommandsCount)
             return 100f;
-        
+
         float efficiency = ((float)_idealCommandsCount / _commandsExecuted) * 100f;
         return Mathf.Clamp(efficiency, 0f, 100f);
     }
@@ -209,7 +205,7 @@ public class LevelUI : MonoBehaviour
     {
         string key = $"BestEfficiency_Level{GetCurrentLevelIndex()}";
         float bestEfficiency = PlayerPrefs.GetFloat(key, 0f);
-        
+
         if (efficiency > bestEfficiency)
         {
             PlayerPrefs.SetFloat(key, efficiency);
@@ -226,18 +222,17 @@ public class LevelUI : MonoBehaviour
         UpdateAttemptsDisplay();
 
         int attemptsLeft = GameProgress.Instance.AttemptsLeft;
-        
-        // Скрываем статистику при проигрыше
+
         if (_statsPanel != null)
             _statsPanel.SetActive(false);
-        
+
         if (attemptsLeft <= 0)
         {
             _titleText.text = "Попытки закончились!";
             _timeText.text = "Прогресс сброшен до 1 уровня";
             _nextLevelButton?.gameObject.SetActive(false);
             _retryButton?.gameObject.SetActive(false);
-            
+
             Debug.Log("Все попытки потрачены! Прогресс сброшен.");
         }
         else
@@ -247,7 +242,7 @@ public class LevelUI : MonoBehaviour
             _nextLevelButton?.gameObject.SetActive(false);
             _retryButton?.gameObject.SetActive(true);
         }
-        
+
         _resultPanel?.SetActive(true);
     }
 
@@ -260,7 +255,7 @@ public class LevelUI : MonoBehaviour
     public void GoToMenu()
     {
         Time.timeScale = 1f;
-        
+
         if (GameProgress.Instance != null && GameProgress.Instance.AttemptsLeft <= 0)
         {
             PlayerPrefs.DeleteKey("LastPlayedLevel");
@@ -268,24 +263,25 @@ public class LevelUI : MonoBehaviour
             PlayerPrefs.Save();
             Debug.Log("Попытки закончились! Сброс прогресса.");
         }
-        
+
         SceneManager.LoadScene("MainMenu");
     }
 
-    public void QuitGame()
+    public void GiveUp()
     {
-        Application.Quit();
+        GameProgress.Instance?.ResetProgress();
+        SceneManager.LoadScene("Level1");
     }
 
     private void LoadNextLevel()
     {
         int next = GetCurrentLevelIndex() + 1;
         string nextLevelName = "Level" + next;
-        
+
         PlayerPrefs.DeleteKey("CurrentAttempts");
         PlayerPrefs.SetString("LastPlayedLevel", nextLevelName);
         PlayerPrefs.Save();
-        
+
         SceneManager.LoadScene(nextLevelName);
     }
 
@@ -297,15 +293,17 @@ public class LevelUI : MonoBehaviour
             SceneManager.LoadScene("MainMenu");
             return;
         }
-        
+
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     private int GetCurrentLevelIndex()
     {
         string name = SceneManager.GetActiveScene().name;
+
         if (int.TryParse(name.Replace("Level", ""), out int idx))
             return idx;
+
         return 1;
     }
 
@@ -314,6 +312,7 @@ public class LevelUI : MonoBehaviour
         float elapsed = Time.time - _levelStartTime;
         int minutes = Mathf.FloorToInt(elapsed / 60);
         int seconds = Mathf.FloorToInt(elapsed % 60);
+
         return $"Время: {minutes:00}:{seconds:00}";
     }
 }
