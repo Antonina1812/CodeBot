@@ -2151,7 +2151,7 @@ MonoBehaviour:
   _resultMenuButton: {fileID: 494403970}
   _menuButton: {fileID: 2076457839}
   _settingsButton: {fileID: 2076457838}
-  _quitButton: {fileID: 2076457837}
+  _giveUpButton: {fileID: 2076457837}
   _settingsPanel: {fileID: 641499134}
   _attemptsText: {fileID: 0}
   _attemptsForThisLevel: 6

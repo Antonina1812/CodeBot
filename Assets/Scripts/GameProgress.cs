@@ -41,16 +41,14 @@ public class GameProgress : MonoBehaviour
         _runtimeData.lastUnlockedLevel = _defaultData.lastUnlockedLevel;
         _runtimeData.attemptsLeft = _defaultData.attemptsLeft;
 
-        // Пытаемся загрузить сохранение
         HasSave = SaveSystem.Load(_runtimeData);
-        
+
         if (HasSave)
         {
             Debug.Log($"Загружено сохранение. Попытки: {_runtimeData.attemptsLeft}");
         }
         else
         {
-            // Первый запуск - используем значения по умолчанию
             _runtimeData.attemptsLeft = _defaultAttempts;
             Debug.Log($"Новая игра. Попытки: {_defaultAttempts}");
         }
@@ -102,7 +100,7 @@ public class GameProgress : MonoBehaviour
     {
         _runtimeData.attemptsLeft--;
         Debug.Log($"Потрачена попытка. Осталось: {_runtimeData.attemptsLeft}");
-        
+
         if (_runtimeData.attemptsLeft <= 0)
         {
             ResetProgress();
@@ -115,8 +113,21 @@ public class GameProgress : MonoBehaviour
 
     public void ResetProgress()
     {
+        if (_runtimeData == null) return;
+
         Debug.Log("Сброс прогресса до 1 уровня!");
+
+        float savedMusic = _runtimeData.musicVolume;
+        float savedSfx = _runtimeData.sfxVolume;
+
         _runtimeData.lastUnlockedLevel = 1;
+        _runtimeData.attemptsLeft = _defaultAttempts;
+        HasSave = false;
+
+        _runtimeData.musicVolume = savedMusic;
+        _runtimeData.sfxVolume = savedSfx;
+
+        SaveSystem.DeleteSave();
         Save();
     }
-}   
+}
